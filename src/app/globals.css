@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.font-serif { 
+  font-family: 'Cormorant Garamond', serif; 
+}
+
+.font-sans { 
+  font-family: 'Inter', sans-serif; 
+}
+
+html { 
+  scroll-behavior: smooth; 
+}
+
+.premium-blur {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.hover-lift {
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-6px);
+}
+
+@keyframes panAmbient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.ambient-hero {
+  background-size: 120% 120%;
+  animation: panAmbient 20s ease infinite;
+}
