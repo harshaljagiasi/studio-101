@@ -78,7 +78,7 @@ export default function HomePage() {
               <div className="relative aspect-video w-full overflow-hidden bg-neutral-200">
                 <div 
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-110" 
-                  style={{ backgroundImage: "url('/images/studio-rooms/cyc wall.jpg')" }}
+                  style={{ backgroundImage: "url('/images/studio-rooms/DSC01877.jpg')" }}
                 ></div>
                 <div className="absolute inset-0 bg-[#1A1A1A]/10 group-hover:bg-transparent transition-colors duration-500"></div>
               </div>
