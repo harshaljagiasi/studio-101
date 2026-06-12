@@ -36,7 +36,8 @@ export default function HomePage() {
         
         <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
           
-          <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+          {/* TEXT COLUMN - Added order-2 lg:order-1 mt-8 lg:mt-0 */}
+          <div className="lg:col-span-7 space-y-6 text-center lg:text-left order-2 lg:order-1 mt-8 lg:mt-0">
             <div className={`inline-flex items-center space-x-2 bg-[#1A1A1A]/5 px-3 py-1 rounded-full text-xs font-medium tracking-widest uppercase text-[#1A1A1A]/70 transition-all duration-1000 delay-100 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               <span>Stating to be one of a kind</span>
               <span className="text-amber-500 animate-pulse">✨</span>
@@ -62,13 +63,11 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* --- CAROUSEL UI SECTION --- */}
-          <div className={`lg:col-span-5 relative transition-all duration-1000 delay-500 ${isLoaded ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-12'}`}>
+          {/* CAROUSEL COLUMN - Added order-1 lg:order-2 */}
+          <div className={`lg:col-span-5 relative transition-all duration-1000 delay-500 order-1 lg:order-2 ${isLoaded ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-12'}`}>
             
-            {/* Clean, editorial container WITH ROUNDED CORNERS (rounded-[30px]) */}
             <div className="relative w-full aspect-[4/5] bg-neutral-200 overflow-hidden rounded-[30px] shadow-2xl border border-[#1A1A1A]/10 group">
               
-              {/* Auto-Rotating Images */}
               {heroImages.map((img, index) => (
                 <div 
                   key={index}
@@ -77,17 +76,14 @@ export default function HomePage() {
                 ></div>
               ))}
 
-              {/* Gradient Overlay to ensure text is always readable */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/80 via-[#1A1A1A]/10 to-transparent z-20 pointer-events-none"></div>
               
-              {/* Floating Quote Box & Slide Indicators */}
               <div className="absolute bottom-6 left-6 right-6 p-6 bg-[#F4F2EE]/90 premium-blur border border-white/20 shadow-lg rounded-2xl z-30 transform transition-transform duration-500 group-hover:-translate-y-2">
                 <p className="font-serif text-lg italic text-[#1A1A1A]">"Without you, it's just walls."</p>
                 
                 <div className="flex justify-between items-end mt-3 border-t border-[#1A1A1A]/10 pt-3">
                   <p className="text-[10px] uppercase tracking-widest text-[#1A1A1A]/60">Studio 101 Creative Engine</p>
                   
-                  {/* Dynamic Slide Dots */}
                   <div className="flex space-x-1.5">
                     {heroImages.map((_, idx) => (
                       <span 
@@ -104,7 +100,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* EXPLORE SPACES CONTENT GRID */}
+      {/* EXPLORE SPACES CONTENT GRID (Completely untouched) */}
       <section id="spaces" className="py-24 bg-[#EAE6DF] border-t border-[#1A1A1A]/5">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
