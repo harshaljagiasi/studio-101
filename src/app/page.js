@@ -74,10 +74,12 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* 1. THE CYC WALL */}
+            {/* 1. THE CYC WALL */}
             <div className="bg-[#F4F2EE] p-4 border border-[#1A1A1A]/5 shadow-sm transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl group">
               <div className="relative aspect-video w-full overflow-hidden bg-neutral-200">
+                {/* CHANGED bg-cover TO bg-contain bg-no-repeat */}
                 <div 
-                  className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-110" 
+                  className="absolute inset-0 bg-contain bg-no-repeat bg-center transition-transform duration-1000 group-hover:scale-110" 
                   style={{ backgroundImage: "url('/images/studio-rooms/DSC01877.jpg')" }}
                 ></div>
                 <div className="absolute inset-0 bg-[#1A1A1A]/10 group-hover:bg-transparent transition-colors duration-500"></div>
