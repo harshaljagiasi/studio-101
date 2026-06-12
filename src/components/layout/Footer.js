@@ -25,9 +25,9 @@ export default function Footer() {
           <a href="https://www.instagram.com/visit.studio1o1/" target="_blank" rel="noopener noreferrer" className="hover:text-white hover:scale-110 transition-all">
             <i className="fa-brands fa-instagram"></i>
           </a>
-          <Link href="/contact" className="hover:text-white hover:scale-110 transition-all">
+          <a href="https://maps.app.goo.gl/1tJuM5U92rNLJf6BA" target="_blank" rel="noopener noreferrer" className="hover:text-white hover:scale-110 transition-all">
             <i className="fa-solid fa-location-dot"></i>
-          </Link>
+          </a>
         </div>
       </div>
     </footer>
