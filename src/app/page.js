@@ -20,10 +20,10 @@ export default function HomePage() {
   useEffect(() => {
     setIsLoaded(true);
     
-    // Changes the slide every 4 seconds
+    // Changes the slide every 2 seconds
     const timer = setInterval(() => {
       setCurrentSlide((prevSlide) => (prevSlide + 1) % heroImages.length);
-    }, 4000);
+    }, 2000);
     
     return () => clearInterval(timer);
   }, [heroImages.length]);
@@ -65,8 +65,8 @@ export default function HomePage() {
           {/* --- CAROUSEL UI SECTION --- */}
           <div className={`lg:col-span-5 relative transition-all duration-1000 delay-500 ${isLoaded ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-12'}`}>
             
-            {/* Clean, editorial rectangular container */}
-            <div className="relative w-full aspect-[4/5] bg-neutral-200 overflow-hidden shadow-2xl border border-[#1A1A1A]/10 group">
+            {/* Clean, editorial container WITH ROUNDED CORNERS (rounded-[30px]) */}
+            <div className="relative w-full aspect-[4/5] bg-neutral-200 overflow-hidden rounded-[30px] shadow-2xl border border-[#1A1A1A]/10 group">
               
               {/* Auto-Rotating Images */}
               {heroImages.map((img, index) => (
@@ -81,7 +81,7 @@ export default function HomePage() {
               <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/80 via-[#1A1A1A]/10 to-transparent z-20 pointer-events-none"></div>
               
               {/* Floating Quote Box & Slide Indicators */}
-              <div className="absolute bottom-6 left-6 right-6 p-6 bg-[#F4F2EE]/90 premium-blur border border-white/20 shadow-lg z-30 transform transition-transform duration-500 group-hover:-translate-y-2">
+              <div className="absolute bottom-6 left-6 right-6 p-6 bg-[#F4F2EE]/90 premium-blur border border-white/20 shadow-lg rounded-2xl z-30 transform transition-transform duration-500 group-hover:-translate-y-2">
                 <p className="font-serif text-lg italic text-[#1A1A1A]">"Without you, it's just walls."</p>
                 
                 <div className="flex justify-between items-end mt-3 border-t border-[#1A1A1A]/10 pt-3">
