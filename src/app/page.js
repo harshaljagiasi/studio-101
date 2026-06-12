@@ -5,10 +5,28 @@ import Link from 'next/link';
 
 export default function HomePage() {
   const [isLoaded, setIsLoaded] = useState(false);
+  
+  // --- CAROUSEL STATE LOGIC ---
+  const [currentSlide, setCurrentSlide] = useState(0);
+  
+  // Array of images for the carousel
+  const heroImages = [
+    "https://images.unsplash.com/photo-1595814433015-e6f5ce69614e?q=80&w=600&auto=format&fit=crop", 
+    "/images/studio-rooms/DSC01877.jpg",
+    "/images/studio-rooms/props.jpg",
+    "/images/studio-rooms/creative lounge.jpg"
+  ];
 
   useEffect(() => {
     setIsLoaded(true);
-  }, []);
+    
+    // Changes the slide every 4 seconds
+    const timer = setInterval(() => {
+      setCurrentSlide((prevSlide) => (prevSlide + 1) % heroImages.length);
+    }, 4000);
+    
+    return () => clearInterval(timer);
+  }, [heroImages.length]);
 
   return (
     <>
@@ -44,20 +62,43 @@ export default function HomePage() {
             </div>
           </div>
 
+          {/* --- CAROUSEL UI SECTION --- */}
           <div className={`lg:col-span-5 relative transition-all duration-1000 delay-500 ${isLoaded ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-12'}`}>
-            <div className="relative w-full aspect-[4/5] bg-gradient-to-b from-transparent to-[#1A1A1A]/10 rounded-t-[160px] overflow-hidden p-3 border border-[#1A1A1A]/5 shadow-2xl hover:shadow-3xl transition-shadow duration-700">
-              <div className="w-full h-full rounded-t-[150px] overflow-hidden bg-[#D2C9BE] relative group">
+            
+            {/* Clean, editorial rectangular container */}
+            <div className="relative w-full aspect-[4/5] bg-neutral-200 overflow-hidden shadow-2xl border border-[#1A1A1A]/10 group">
+              
+              {/* Auto-Rotating Images */}
+              {heroImages.map((img, index) => (
                 <div 
-                  className="absolute inset-0 bg-cover bg-center mix-blend-multiply opacity-80 transition-transform duration-[20s] group-hover:scale-110" 
-                  style={{ backgroundImage: "url('https://images.unsplash.com/photo-1595814433015-e6f5ce69614e?q=80&w=600&auto=format&fit=crop')" }}
+                  key={index}
+                  className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ease-in-out ${currentSlide === index ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                  style={{ backgroundImage: `url('${img}')` }}
                 ></div>
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/60 via-transparent to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+              ))}
+
+              {/* Gradient Overlay to ensure text is always readable */}
+              <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/80 via-[#1A1A1A]/10 to-transparent z-20 pointer-events-none"></div>
+              
+              {/* Floating Quote Box & Slide Indicators */}
+              <div className="absolute bottom-6 left-6 right-6 p-6 bg-[#F4F2EE]/90 premium-blur border border-white/20 shadow-lg z-30 transform transition-transform duration-500 group-hover:-translate-y-2">
+                <p className="font-serif text-lg italic text-[#1A1A1A]">"Without you, it's just walls."</p>
                 
-                <div className="absolute bottom-6 left-6 right-6 p-6 bg-[#F4F2EE]/90 premium-blur border border-white/20 shadow-lg transform translate-y-0 group-hover:-translate-y-2 transition-transform duration-500">
-                  <p className="font-serif text-lg italic">"Without you, it's just walls."</p>
-                  <p className="text-[10px] uppercase tracking-widest text-[#1A1A1A]/60 mt-1">Studio 101 Creative Engine</p>
+                <div className="flex justify-between items-end mt-3 border-t border-[#1A1A1A]/10 pt-3">
+                  <p className="text-[10px] uppercase tracking-widest text-[#1A1A1A]/60">Studio 101 Creative Engine</p>
+                  
+                  {/* Dynamic Slide Dots */}
+                  <div className="flex space-x-1.5">
+                    {heroImages.map((_, idx) => (
+                      <span 
+                        key={idx} 
+                        className={`h-1 rounded-full transition-all duration-500 ${currentSlide === idx ? 'w-4 bg-[#1A1A1A]' : 'w-1.5 bg-[#1A1A1A]/30'}`}
+                      ></span>
+                    ))}
+                  </div>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
@@ -74,10 +115,8 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* 1. THE CYC WALL */}
-            {/* 1. THE CYC WALL */}
             <div className="bg-[#F4F2EE] p-4 border border-[#1A1A1A]/5 shadow-sm transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl group">
               <div className="relative aspect-video w-full overflow-hidden bg-neutral-200">
-                {/* CHANGED bg-cover TO bg-contain bg-no-repeat */}
                 <div 
                   className="absolute inset-0 bg-contain bg-no-repeat bg-center transition-transform duration-1000 group-hover:scale-110" 
                   style={{ backgroundImage: "url('/images/studio-rooms/DSC01877.jpg')" }}
@@ -107,8 +146,7 @@ export default function HomePage() {
               <p className="text-xs text-[#1A1A1A]/60 mt-1 font-light">Classic, clean molded structural alcove environments. Outfitted with high-seating bar stools and subtle design props for modern profile framing.</p>
             </div>
 
-            {/* 3. THE CREATIVE LOUNGE */}
-            {/* 3. THE PODCAST SUITE (Previously Creative Lounge) */}
+            {/* 3. THE PODCAST SUITE */}
             <div className="bg-[#F4F2EE] p-4 border border-[#1A1A1A]/5 shadow-sm transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl group">
               <div className="relative aspect-video w-full overflow-hidden bg-neutral-200">
                 <div 
@@ -119,7 +157,6 @@ export default function HomePage() {
               </div>
               <div className="mt-4 flex justify-between items-baseline">
                 <h3 className="font-serif text-xl font-medium text-[#1A1A1A]">The Podcast Suite</h3>
-                {/* The subtitle <span> tag has been completely removed here */}
               </div>
               <p className="text-xs text-[#1A1A1A]/60 mt-1 font-light">Acoustically friendly, multi-angle seating configurations designed specifically for premium video podcasts, high-end interviews, and deep-dive conversational content.</p>
             </div>
