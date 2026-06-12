@@ -106,6 +106,7 @@ export default function HomePage() {
             </div>
 
             {/* 3. THE CREATIVE LOUNGE */}
+            {/* 3. THE PODCAST SUITE (Previously Creative Lounge) */}
             <div className="bg-[#F4F2EE] p-4 border border-[#1A1A1A]/5 shadow-sm transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl group">
               <div className="relative aspect-video w-full overflow-hidden bg-neutral-200">
                 <div 
@@ -115,10 +116,10 @@ export default function HomePage() {
                 <div className="absolute inset-0 bg-[#1A1A1A]/10 group-hover:bg-transparent transition-colors duration-500"></div>
               </div>
               <div className="mt-4 flex justify-between items-baseline">
-                <h3 className="font-serif text-xl font-medium text-[#1A1A1A]">The Creative Lounge</h3>
-                <span className="text-xs uppercase tracking-widest text-[#1A1A1A]/50 group-hover:text-amber-700 transition-colors duration-300">Custom Personalities</span>
+                <h3 className="font-serif text-xl font-medium text-[#1A1A1A]">The Podcast Suite</h3>
+                {/* The subtitle <span> tag has been completely removed here */}
               </div>
-              <p className="text-xs text-[#1A1A1A]/60 mt-1 font-light">Switchable seating frameworks ranging from relaxed deep plum leather beanbags to structural slate velvet chairs. Alter the vibe instantly.</p>
+              <p className="text-xs text-[#1A1A1A]/60 mt-1 font-light">Acoustically friendly, multi-angle seating configurations designed specifically for premium video podcasts, high-end interviews, and deep-dive conversational content.</p>
             </div>
 
             {/* 4. GLAM & VANITY AREA */}
