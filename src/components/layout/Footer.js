@@ -6,17 +6,25 @@ export default function Footer() {
     <footer className="bg-[#121212] text-white/70 py-12 border-t border-white/5 text-sm tracking-wider">
       <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6">
         
-        <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 rounded-full bg-white/10 flex flex-col items-center justify-center text-[5px] text-white font-bold leading-none">
-            <span>101</span>
+        <div className="flex items-center space-x-4">
+          {/* --- REPLACED TEXT CIRCLE WITH SCALED IMAGE --- */}
+          <div className="w-12 h-12 rounded-full overflow-hidden relative shadow-sm bg-[#E6E2DA]">
+            <img 
+              src="/images/ui-assets/logo.jpeg" 
+              alt="Studio 101 Logo" 
+              className="absolute inset-0 w-full h-full object-cover origin-center" 
+              style={{ objectPosition: '50% 50%', transform: 'scale(1.70)' }} 
+            />
           </div>
+          {/* ---------------------------------------------- */}
+          
           {/* 2. Brightened the left handle text */}
           <span className="text-white/90 font-serif lowercase text-base">@visit.studio101</span>
         </div>
         
         {/* 3. Increased middle text size from 11px to text-sm and made it slightly bolder (font-normal instead of font-light) */}
         <p className="text-center md:text-left font-normal text-sm">
-          &copy; 2026 Studio 101. Built cleanly for verified production scale.
+          © 2026 Studio 101. Built cleanly for verified production scale.
         </p>
         
         {/* 4. Increased icon size from text-sm to text-lg and brightened them */}
