@@ -67,23 +67,25 @@ export default function ContactPage() {
           </p>
 
           <div className="space-y-4 pt-4">
-            <a href="tel:916001 53 54 55" className="flex items-center space-x-4 p-4 bg-white/5 hover:bg-white/10 border border-white/10 transition-all duration-500 group hover:-translate-y-1 hover:shadow-lg rounded-sm">
+            {/* UPDATED HOTLINE LINK AND TEXT */}
+            <a href="tel:+916001535455" className="flex items-center space-x-4 p-4 bg-white/5 hover:bg-white/10 border border-white/10 transition-all duration-500 group hover:-translate-y-1 hover:shadow-lg rounded-sm">
               <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-sm group-hover:scale-110 group-hover:bg-white/20 transition-all duration-300">
                 <i className="fa-solid fa-phone"></i>
               </div>
               <div>
                 <p className="text-[10px] uppercase tracking-widest text-[#F4F2EE]/40 font-medium">Direct Booking Hotline</p>
-                <p className="text-sm font-medium tracking-wide text-white group-hover:text-amber-100 transition-colors">++91 6001535455</p>
+                <p className="text-sm font-medium tracking-wide text-white group-hover:text-amber-100 transition-colors">+91 6001 53 54 55</p>
               </div>
             </a>
             
+            {/* UPDATED EMAIL TEXT */}
             <a href="mailto:mailtostudio1o1@gmail.com" className="flex items-center space-x-4 p-4 bg-white/5 hover:bg-white/10 border border-white/10 transition-all duration-500 group hover:-translate-y-1 hover:shadow-lg rounded-sm">
               <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-sm group-hover:scale-110 group-hover:bg-white/20 transition-all duration-300">
                 <i className="fa-solid fa-envelope"></i>
               </div>
               <div>
                 <p className="text-[10px] uppercase tracking-widest text-[#F4F2EE]/40 font-medium">Electronic Inquiry Desk</p>
-                <p className="text-sm font-medium tracking-wide text-white group-hover:text-amber-100 transition-colors">hello@studio101.creators</p>
+                <p className="text-sm font-medium tracking-wide text-white group-hover:text-amber-100 transition-colors">mailtostudio1o1@gmail.com</p>
               </div>
             </a>
           </div>
