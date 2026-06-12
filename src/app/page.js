@@ -101,6 +101,7 @@ export default function HomePage() {
       </section>
 
       {/* EXPLORE SPACES CONTENT GRID (Completely untouched) */}
+      {/* EXPLORE SPACES CONTENT GRID */}
       <section id="spaces" className="py-24 bg-[#EAE6DF] border-t border-[#1A1A1A]/5">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
@@ -111,66 +112,66 @@ export default function HomePage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* 1. THE CYC WALL */}
-            <div className="bg-[#F4F2EE] p-4 border border-[#1A1A1A]/5 shadow-sm transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl group">
-              <div className="relative aspect-video w-full overflow-hidden bg-neutral-200">
+            <div className="bg-[#F4F2EE] p-4 border border-[#1A1A1A]/5 rounded-[24px] shadow-sm transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl group">
+              <div className="relative aspect-video w-full overflow-hidden rounded-[16px] bg-neutral-200">
                 <div 
                   className="absolute inset-0 bg-contain bg-no-repeat bg-center transition-transform duration-1000 group-hover:scale-110" 
                   style={{ backgroundImage: "url('/images/studio-rooms/DSC01877.jpg')" }}
                 ></div>
                 <div className="absolute inset-0 bg-[#1A1A1A]/10 group-hover:bg-transparent transition-colors duration-500"></div>
               </div>
-              <div className="mt-4 flex justify-between items-baseline">
+              <div className="mt-4 flex justify-between items-baseline px-2">
                 <h3 className="font-serif text-xl font-medium text-[#1A1A1A]">The Cyc Wall</h3>
                 <span className="text-xs uppercase tracking-widest text-[#1A1A1A]/50 group-hover:text-amber-700 transition-colors duration-300">Infinite White Canvas</span>
               </div>
-              <p className="text-xs text-[#1A1A1A]/60 mt-1 font-light">High-key production zone paired with professional softboxes and boom mounts for clean catalogs, high-end e-commerce, and brand lookbooks.</p>
+              <p className="text-xs text-[#1A1A1A]/60 mt-1 font-light px-2">High-key production zone paired with professional softboxes and boom mounts for clean catalogs, high-end e-commerce, and brand lookbooks.</p>
             </div>
 
             {/* 2. EDITORIAL ARCH & PROPS */}
-            <div className="bg-[#F4F2EE] p-4 border border-[#1A1A1A]/5 shadow-sm transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl group">
-              <div className="relative aspect-video w-full overflow-hidden bg-neutral-200">
+            <div className="bg-[#F4F2EE] p-4 border border-[#1A1A1A]/5 rounded-[24px] shadow-sm transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl group">
+              <div className="relative aspect-video w-full overflow-hidden rounded-[16px] bg-neutral-200">
                 <div 
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-110" 
                   style={{ backgroundImage: "url('/images/studio-rooms/props.jpg')" }}
                 ></div>
                 <div className="absolute inset-0 bg-[#1A1A1A]/10 group-hover:bg-transparent transition-colors duration-500"></div>
               </div>
-              <div className="mt-4 flex justify-between items-baseline">
+              <div className="mt-4 flex justify-between items-baseline px-2">
                 <h3 className="font-serif text-xl font-medium text-[#1A1A1A]">Editorial Arch & Props</h3>
                 <span className="text-xs uppercase tracking-widest text-[#1A1A1A]/50 group-hover:text-amber-700 transition-colors duration-300">Warm Minimalism</span>
               </div>
-              <p className="text-xs text-[#1A1A1A]/60 mt-1 font-light">Classic, clean molded structural alcove environments. Outfitted with high-seating bar stools and subtle design props for modern profile framing.</p>
+              <p className="text-xs text-[#1A1A1A]/60 mt-1 font-light px-2">Classic, clean molded structural alcove environments. Outfitted with high-seating bar stools and subtle design props for modern profile framing.</p>
             </div>
 
             {/* 3. THE PODCAST SUITE */}
-            <div className="bg-[#F4F2EE] p-4 border border-[#1A1A1A]/5 shadow-sm transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl group">
-              <div className="relative aspect-video w-full overflow-hidden bg-neutral-200">
+            <div className="bg-[#F4F2EE] p-4 border border-[#1A1A1A]/5 rounded-[24px] shadow-sm transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl group">
+              <div className="relative aspect-video w-full overflow-hidden rounded-[16px] bg-neutral-200">
                 <div 
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-110" 
                   style={{ backgroundImage: "url('/images/studio-rooms/creative lounge.jpg')" }}
                 ></div>
                 <div className="absolute inset-0 bg-[#1A1A1A]/10 group-hover:bg-transparent transition-colors duration-500"></div>
               </div>
-              <div className="mt-4 flex justify-between items-baseline">
+              <div className="mt-4 flex justify-between items-baseline px-2">
                 <h3 className="font-serif text-xl font-medium text-[#1A1A1A]">The Podcast Suite</h3>
               </div>
-              <p className="text-xs text-[#1A1A1A]/60 mt-1 font-light">Acoustically friendly, multi-angle seating configurations designed specifically for premium video podcasts, high-end interviews, and deep-dive conversational content.</p>
+              <p className="text-xs text-[#1A1A1A]/60 mt-1 font-light px-2">Acoustically friendly, multi-angle seating configurations designed specifically for premium video podcasts, high-end interviews, and deep-dive conversational content.</p>
             </div>
 
             {/* 4. GLAM & VANITY AREA */}
-            <div className="bg-[#F4F2EE] p-4 border border-[#1A1A1A]/5 shadow-sm transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl group">
-              <div className="relative aspect-video w-full overflow-hidden bg-neutral-200">
+            <div className="bg-[#F4F2EE] p-4 border border-[#1A1A1A]/5 rounded-[24px] shadow-sm transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl group">
+              <div className="relative aspect-video w-full overflow-hidden rounded-[16px] bg-neutral-200">
                 <div 
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-110" 
                   style={{ backgroundImage: "url('/images/studio-rooms/vanity  room.jpg')" }}
                 ></div>
                 <div className="absolute inset-0 bg-[#1A1A1A]/10 group-hover:bg-transparent transition-colors duration-500"></div>
               </div>
-              <div className="mt-4 flex justify-between items-baseline">
+              <div className="mt-4 flex justify-between items-baseline px-2">
                 <h3 className="font-serif text-xl font-medium text-[#1A1A1A]">Glam & Vanity Area</h3>
                 <span className="text-xs uppercase tracking-widest text-[#1A1A1A]/50 group-hover:text-amber-700 transition-colors duration-300">Backstage Premium</span>
               </div>
-              <p className="text-xs text-[#1A1A1A]/60 mt-1 font-light">Hollywood bulb-lined preparation mirrors paired with playful staging props (including the iconic giant studio panda) for warm b-roll or getting-ready content.</p>
+              <p className="text-xs text-[#1A1A1A]/60 mt-1 font-light px-2">Hollywood bulb-lined preparation mirrors paired with playful staging props (including the iconic giant studio panda) for warm b-roll or getting-ready content.</p>
             </div>
           </div>
         </div>
