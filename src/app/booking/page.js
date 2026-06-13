@@ -259,8 +259,10 @@ export default function BookingPage() {
                     const isSelected = selectedEquipment.some(e => e.id === item.id);
                     return (
                       <div key={item.id} onClick={() => toggleEquipment(item)} className={`p-4 border cursor-pointer transition-all duration-300 flex justify-between items-center group ${isSelected ? 'bg-[#1A1A1A] border-[#1A1A1A] text-white shadow-md scale-[1.02]' : 'bg-[#EAE6DF] border-[#1A1A1A]/10 text-[#1A1A1A] hover:bg-white hover:shadow-sm'}`}>
-                        <span className="text-xs font-medium">{item.name}</span>
-                        <span className={`text-[10px] tracking-widest font-mono ${isSelected ? 'text-emerald-400' : 'text-[#1A1A1A]/50 group-hover:text-[#1A1A1A]'}`}>+₹{item.price}</span>
+                        {/* Added flex-1 and pr-4 to give the name room to breathe without pushing the price */}
+                        <span className="text-xs font-medium flex-1 pr-4">{item.name}</span>
+                        {/* Added whitespace-nowrap and flex-shrink-0 to prevent the price from breaking lines */}
+                        <span className={`text-[10px] tracking-widest font-mono whitespace-nowrap flex-shrink-0 ${isSelected ? 'text-emerald-400' : 'text-[#1A1A1A]/50 group-hover:text-[#1A1A1A]'}`}>+₹{item.price}</span>
                       </div>
                     );
                   })}
