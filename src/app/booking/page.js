@@ -8,8 +8,12 @@ export default function BookingPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [notification, setNotification] = useState(null);
 
-  // Dynamic Database Data
-  const [equipmentList, setEquipmentList] = useState([]);
+  // Dynamic Database Data & Hardcoded Equipment List
+  const [equipmentList, setEquipmentList] = useState([
+    { id: 'cam-1', name: 'Camera - Sony Mark IV (Entire slot excluding lens)', price: 2000 },
+    { id: 'light-1', name: 'Per Video Light (Entire slot)', price: 500 },
+    { id: 'mic-1', name: 'Mic - DJI Mic Mini (Entire slot)', price: 500 }
+  ]);
   const [bookedSlots, setBookedSlots] = useState([]); 
 
   // Client Selection State
@@ -40,20 +44,15 @@ export default function BookingPage() {
   const totalDays = Array.from({ length: daysInCurrentMonth }, (_, i) => i + 1);
   const daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
-  // Generate 1-hour slots from 9 AM to 9 PM
-  const allTimeSlots = Array.from({ length: 12 }, (_, i) => {
-    const start = i + 9;
+  // Generate 1-hour slots from 7 AM to 10 PM (15 slots total)
+  const allTimeSlots = Array.from({ length: 15 }, (_, i) => {
+    const start = i + 7;
     return `${start < 10 ? '0' + start : start}:00 - ${start + 1 < 10 ? '0' + (start + 1) : start + 1}:00`;
   });
 
-  // 1. Fetch equipment inventory from Supabase on mount
+  // 1. Initial Load State
   useEffect(() => {
     setIsLoaded(true);
-    const fetchEquipment = async () => {
-      const { data, error } = await supabase.from('equipment_inventory').select('*').order('created_at', { ascending: true });
-      if (!error && data) setEquipmentList(data);
-    };
-    fetchEquipment();
   }, []);
 
   // 2. Fetch unavailable slots whenever the user selects a date
@@ -206,7 +205,7 @@ export default function BookingPage() {
                 <label className="block text-[10px] uppercase tracking-widest text-[#1A1A1A]/60 font-medium mb-3">Available Hourly Blocks</label>
                 <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
                   {allTimeSlots.map(slot => {
-                    // Extract the starting hour of the slot (e.g. "09:00 - 10:00" -> 9)
+                    // Extract the starting hour of the slot (e.g. "07:00 - 08:00" -> 7)
                     const slotStartHour = parseInt(slot.split(':')[0], 10);
                     
                     // Auto-block the hour if the user selected TODAY and the hour has already passed
@@ -253,7 +252,7 @@ export default function BookingPage() {
             <div className="space-y-4">
               <label className="block text-[10px] uppercase tracking-widest text-[#1A1A1A]/60 font-medium">3. Hardware & Crew Add-ons (Optional)</label>
               {equipmentList.length === 0 ? (
-                <p className="text-xs text-[#1A1A1A]/50 italic border border-[#1A1A1A]/5 p-4 text-center">Loading live inventory...</p>
+                <p className="text-xs text-[#1A1A1A]/50 italic border border-[#1A1A1A]/5 p-4 text-center">Loading inventory...</p>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {equipmentList.map(item => {

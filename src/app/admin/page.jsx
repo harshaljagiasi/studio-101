@@ -31,8 +31,8 @@ export default function AdminDashboard() {
   const daysArray = Array.from({ length: daysInCurrentMonth }, (_, i) => i + 1);
   const weekDays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
 
-  const allTimeSlots = Array.from({ length: 12 }, (_, i) => {
-    const start = i + 9;
+  const allTimeSlots = Array.from({ length: 15 }, (_, i) => {
+    const start = i + 7;
     return `${start < 10 ? '0' + start : start}:00 - ${start + 1 < 10 ? '0' + (start + 1) : start + 1}:00`;
   });
 
