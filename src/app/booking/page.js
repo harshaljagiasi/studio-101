@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { supabase } from '../../lib/supabase'; // Connected to your live database
+import { supabase } from '../../lib/supabase';
 
 export default function BookingPage() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -32,16 +32,41 @@ export default function BookingPage() {
     "Fashion shoots", "Reels & social media content", "Digital campaigns", "Other (Custom)"
   ];
   
-  // Real-Time Clock Configuration
+  // --- REAL-TIME CALENDAR LOGIC (90-Day Rolling Window) ---
   const now = new Date();
-  const currentYear = now.getFullYear();
-  const currentMonthName = now.toLocaleString('default', { month: 'long' });
-  const currentDay = now.getDate();
   const currentHour = now.getHours();
   
-  // Dynamically calculate days in the current month
-  const daysInCurrentMonth = new Date(currentYear, now.getMonth() + 1, 0).getDate();
-  const totalDays = Array.from({ length: daysInCurrentMonth }, (_, i) => i + 1);
+  // Calculate exactly 90 days from today
+  const generate90Days = () => {
+    const days = [];
+    for (let i = 0; i <= 90; i++) {
+      const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + i);
+      days.push({
+        fullDate: d,
+        day: d.getDate(),
+        monthNum: d.getMonth(),
+        year: d.getFullYear(),
+        monthName: d.toLocaleString('default', { month: 'long' })
+      });
+    }
+    return days;
+  };
+
+  const allAvailableDays = generate90Days();
+
+  // Extract unique months from our 90-day window for the dropdown
+  const availableMonths = [...new Map(allAvailableDays.map(item =>
+    [`${item.monthName} ${item.year}`, { name: item.monthName, year: item.year, num: item.monthNum }]
+  )).values()];
+
+  // State for the calendar view
+  const [viewingMonth, setViewingMonth] = useState(`${availableMonths[0].name} ${availableMonths[0].year}`);
+
+  // Filter the days to display based on the currently selected month in the dropdown
+  const daysToDisplay = allAvailableDays.filter(
+    d => `${d.monthName} ${d.year}` === viewingMonth
+  );
+
   const daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
   // Generate 1-hour slots from 7 AM to 10 PM (15 slots total)
@@ -63,14 +88,13 @@ export default function BookingPage() {
         return;
       }
       
-      const dateString = `${selectedDate} ${currentMonthName} ${currentYear}`;
+      const dateString = `${selectedDate.day} ${selectedDate.monthName} ${selectedDate.year}`;
       
-      // Ping Supabase for all explicitly confirmed bookings
       const { data, error } = await supabase
         .from('bookings')
         .select('time_slots')
         .eq('booking_date', dateString)
-        .eq('status', 'confirmed'); // ONLY look for confirmed slots to block
+        .eq('status', 'confirmed'); 
       
       if (data && !error) {
         const taken = data.flatMap(booking => booking.time_slots || []);
@@ -79,11 +103,11 @@ export default function BookingPage() {
     };
     
     fetchBookedSlots();
-  }, [selectedDate, currentMonthName, currentYear]);
+  }, [selectedDate]);
 
   // UI Handlers
-  const handleDateSelect = (day) => {
-    setSelectedDate(day);
+  const handleDateSelect = (dayObj) => {
+    setSelectedDate(dayObj);
     setSelectedTimes([]); 
   };
 
@@ -113,17 +137,18 @@ export default function BookingPage() {
 
     setIsSubmitting(true);
 
-    // Push to Supabase and INSTANTLY CONFIRM
+    const dateString = `${selectedDate.day} ${selectedDate.monthName} ${selectedDate.year}`;
+
     const { error } = await supabase.from('bookings').insert([{
       client_name: clientName,
       client_phone: clientPhone,
-      booking_date: `${selectedDate} ${currentMonthName} ${currentYear}`, 
+      booking_date: dateString, 
       time_slots: selectedTimes, 
       purpose: purpose,
       custom_purpose: purpose === "Other (Custom)" ? customPurpose : null,
       equipment_addons: selectedEquipment, 
       fee: finalLandedCost,
-      status: 'confirmed' // <--- The Magic Word. Bypasses admin approval.
+      status: 'confirmed' 
     }]);
 
     setIsSubmitting(false);
@@ -134,13 +159,10 @@ export default function BookingPage() {
       return;
     }
 
-    // Trigger WhatsApp Success UI
     setNotification({ name: clientName, cost: finalLandedCost });
     
-    // Optimistically update the UI to instantly block the newly bought slots
     setBookedSlots(prev => [...prev, ...selectedTimes]);
     
-    // Reset Form
     setSelectedDate(null); setSelectedTimes([]); setPurpose(""); 
     setCustomPurpose(""); setSelectedEquipment([]); setClientName(""); setClientPhone("");
     
@@ -166,34 +188,55 @@ export default function BookingPage() {
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <label className="block text-[10px] uppercase tracking-widest text-[#1A1A1A]/60 font-medium">1. Schedule Matrix</label>
-                  <span className="text-xs font-serif italic text-[#1A1A1A]/70">{currentMonthName} {currentYear}</span>
+                  
+                  {/* UPDATED: Premium Custom Month Dropdown */}
+                  <div className="relative">
+                    <select 
+                      value={viewingMonth} 
+                      onChange={(e) => {
+                        setViewingMonth(e.target.value);
+                        setSelectedDate(null); // Clear selection if month changes
+                        setSelectedTimes([]);
+                      }}
+                      className="appearance-none bg-transparent border-b border-[#1A1A1A]/20 pb-1 pr-6 text-xs font-serif font-bold tracking-widest uppercase text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A] cursor-pointer transition-colors"
+                    >
+                      {availableMonths.map((m) => (
+                        <option key={`${m.name} ${m.year}`} value={`${m.name} ${m.year}`}>
+                          {m.name} {m.year}
+                        </option>
+                      ))}
+                    </select>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-1 text-[#1A1A1A]/50 pb-1">
+                      <i className="fa-solid fa-chevron-down text-[8px]"></i>
+                    </div>
+                  </div>
+
                 </div>
                 
                 <div className="grid grid-cols-7 gap-2 text-center text-xs mb-2">
                   {daysOfWeek.map((day, idx) => (
                     <div key={idx} className="font-semibold text-[#1A1A1A]/40 pb-2 text-[10px]">{day}</div>
                   ))}
-                  <div></div>
                   
-                  {totalDays.map(day => {
-                    const isSelected = selectedDate === day;
-                    // Auto-block any day that has already passed in the current month
-                    const isPastDay = day < currentDay;
-
+                  {/* Calculate empty spaces for the first day of the displayed month */}
+                  {Array.from({ length: new Date(daysToDisplay[0]?.year, daysToDisplay[0]?.monthNum, 1).getDay() }).map((_, idx) => (
+                    <div key={`empty-${idx}`}></div>
+                  ))}
+                  
+                  {daysToDisplay.map(dayObj => {
+                    const isSelected = selectedDate?.fullDate.getTime() === dayObj.fullDate.getTime();
+                    
                     return (
                       <button
-                        key={day}
-                        disabled={isPastDay}
-                        onClick={() => handleDateSelect(day)}
+                        key={dayObj.fullDate.toISOString()}
+                        onClick={() => handleDateSelect(dayObj)}
                         className={`py-2.5 transition-all duration-300 border text-xs font-medium ${
-                          isPastDay
-                            ? 'bg-[#1A1A1A]/5 text-[#1A1A1A]/20 border-transparent line-through cursor-not-allowed'
-                            : isSelected 
-                              ? 'bg-[#1A1A1A] text-[#F4F2EE] border-[#1A1A1A] scale-105 shadow-md' 
-                              : 'bg-[#EAE6DF] text-[#1A1A1A] border-[#1A1A1A]/5 hover:bg-[#1A1A1A] hover:text-[#F4F2EE] hover:-translate-y-1 hover:shadow-md'
+                          isSelected 
+                            ? 'bg-[#1A1A1A] text-[#F4F2EE] border-[#1A1A1A] scale-105 shadow-md' 
+                            : 'bg-[#EAE6DF] text-[#1A1A1A] border-[#1A1A1A]/5 hover:bg-[#1A1A1A] hover:text-[#F4F2EE] hover:-translate-y-1 hover:shadow-md'
                         }`}
                       >
-                        {day}
+                        {dayObj.day}
                       </button>
                     );
                   })}
@@ -205,13 +248,12 @@ export default function BookingPage() {
                 <label className="block text-[10px] uppercase tracking-widest text-[#1A1A1A]/60 font-medium mb-3">Available Hourly Blocks</label>
                 <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
                   {allTimeSlots.map(slot => {
-                    // Extract the starting hour of the slot (e.g. "07:00 - 08:00" -> 7)
                     const slotStartHour = parseInt(slot.split(':')[0], 10);
                     
-                    // Auto-block the hour if the user selected TODAY and the hour has already passed
-                    const isPastHourToday = selectedDate === currentDay && slotStartHour <= currentHour;
+                    // Check if the selected date is TODAY, and if so, block past hours
+                    const isToday = selectedDate?.fullDate.getDate() === now.getDate() && selectedDate?.fullDate.getMonth() === now.getMonth();
+                    const isPastHourToday = isToday && slotStartHour <= currentHour;
                     
-                    // Final block logic
                     const isBooked = bookedSlots.includes(slot) || isPastHourToday;
                     const isSelected = selectedTimes.includes(slot);
 
@@ -239,8 +281,9 @@ export default function BookingPage() {
             {/* 2. Purpose of Visit */}
             <div className="space-y-4 relative group">
               <label className="block text-[10px] uppercase tracking-widest text-[#1A1A1A]/60 font-medium">2. Production Purpose</label>
-              <select value={purpose} onChange={(e) => setPurpose(e.target.value)} className="w-full bg-[#EAE6DF] border border-[#1A1A1A]/10 px-4 py-4 text-xs focus:outline-none focus:border-[#1A1A1A] cursor-pointer appearance-none transition-all duration-300 text-[#1A1A1A]">
-                <option value="" disabled>Select the primary goal of your shoot...</option>
+              {/* UPDATED: Added 'capitalize' to the select tag */}
+              <select value={purpose} onChange={(e) => setPurpose(e.target.value)} className="w-full bg-[#EAE6DF] border border-[#1A1A1A]/10 px-4 py-4 text-xs capitalize focus:outline-none focus:border-[#1A1A1A] cursor-pointer appearance-none transition-all duration-300 text-[#1A1A1A]">
+                <option value="" disabled className="normal-case">Select the primary goal of your shoot...</option>
                 {purposes.map(p => <option key={p} value={p}>{p}</option>)}
               </select>
               <div className={`transition-all duration-500 overflow-hidden ${purpose === "Other (Custom)" ? 'max-h-32 opacity-100 mt-4' : 'max-h-0 opacity-0'}`}>
@@ -259,9 +302,7 @@ export default function BookingPage() {
                     const isSelected = selectedEquipment.some(e => e.id === item.id);
                     return (
                       <div key={item.id} onClick={() => toggleEquipment(item)} className={`p-4 border cursor-pointer transition-all duration-300 flex justify-between items-center group ${isSelected ? 'bg-[#1A1A1A] border-[#1A1A1A] text-white shadow-md scale-[1.02]' : 'bg-[#EAE6DF] border-[#1A1A1A]/10 text-[#1A1A1A] hover:bg-white hover:shadow-sm'}`}>
-                        {/* Added flex-1 and pr-4 to give the name room to breathe without pushing the price */}
                         <span className="text-xs font-medium flex-1 pr-4">{item.name}</span>
-                        {/* Added whitespace-nowrap and flex-shrink-0 to prevent the price from breaking lines */}
                         <span className={`text-[10px] tracking-widest font-mono whitespace-nowrap flex-shrink-0 ${isSelected ? 'text-emerald-400' : 'text-[#1A1A1A]/50 group-hover:text-[#1A1A1A]'}`}>+₹{item.price}</span>
                       </div>
                     );
@@ -306,7 +347,7 @@ export default function BookingPage() {
           <div className="flex items-start space-x-4">
             <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center flex-shrink-0 text-lg shadow-sm"><i className="fa-brands fa-whatsapp"></i></div>
             <div className="space-y-2 pr-2">
-              <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-700">Studio 101 Auto-Engine</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-700">Studio 1O1 Auto-Engine</p>
               <p className="text-xs text-neutral-700 leading-relaxed"><strong>Payment Successful!</strong> Hey {notification?.name}, your booking of <strong>₹{notification?.cost}</strong> is 100% confirmed.</p>
               <p className="text-xs text-neutral-700 leading-relaxed border-t border-neutral-100 pt-2 mt-2">An automated WhatsApp itinerary has been dispatched to your number.</p>
             </div>

@@ -30,7 +30,7 @@ export default function Navbar() {
           <div className="w-[72px] h-[72px] rounded-full overflow-hidden relative shadow-sm transition-all duration-700 group-hover:scale-110 group-hover:shadow-xl cursor-pointer bg-[#E6E2DA]">
             <img 
               src="/images/ui-assets/logo.jpeg" 
-              alt="Studio 101 Logo" 
+              alt="Studio 1O1 Logo" 
               className="absolute inset-0 w-full h-full object-cover origin-center transition-transform duration-700 group-hover:rotate-3" 
               style={{ objectPosition: '50% 50%', transform: 'scale(1.70)' }} 
             />

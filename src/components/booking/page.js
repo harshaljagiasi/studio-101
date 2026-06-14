@@ -172,9 +172,9 @@ export default function BookingPage() {
               <i className="fa-brands fa-whatsapp"></i>
             </div>
             <div className="space-y-1">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Studio 101 Dispatcher</p>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">Studio 1O1 Dispatcher</p>
               <p className="text-xs text-neutral-800 leading-normal">
-                <strong>Studio 101 Confirmed!</strong> Hey {notification?.name}, your booking slot for <strong>{notification?.space}</strong> on June {notification?.day}, 2026 during hours [{notification?.time}] has been successfully saved. — Team 101
+                <strong>Studio 1O1 Confirmed!</strong> Hey {notification?.name}, your booking slot for <strong>{notification?.space}</strong> on June {notification?.day}, 2026 during hours [{notification?.time}] has been successfully saved. — Team 1O1
               </p>
               <p className="text-[9px] text-neutral-400 pt-1">Just now • Automated Confirmation Engine</p>
             </div>

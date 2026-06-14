@@ -3,7 +3,7 @@ import Navbar from '../components/layout/Navbar';
 import Footer from '../components/layout/Footer';
 
 export const metadata = {
-  title: 'Studio 101 | Premium Content Creation Space',
+  title: 'Studio 1O1 | Premium Content Creation Space',
   description: 'Built for creators, brands & real stories. Your production home for bringing visions to life.',
 };
 

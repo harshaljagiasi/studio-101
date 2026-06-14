@@ -172,13 +172,13 @@ export default function AdminDashboard() {
         <div className={`w-full max-w-md bg-white/5 border border-white/10 p-10 backdrop-blur-md shadow-2xl relative z-10 transition-all duration-1000 ${isLoaded ? 'translate-y-0 opacity-100' : 'translate-y-12 opacity-0'}`}>
           <div className="text-center mb-8">
             <div className="w-16 h-16 bg-white/10 rounded-full mx-auto mb-4 flex items-center justify-center border border-white/20">
-               <span className="text-white font-serif font-bold tracking-widest text-lg">101</span>
+               <span className="text-white font-serif font-bold tracking-widest text-lg">1O1</span>
             </div>
             <h1 className="text-white font-serif text-2xl tracking-wide">Studio Command</h1>
             <p className="text-white/40 text-[10px] uppercase tracking-widest mt-2">Authorized Access Only</p>
           </div>
           <form onSubmit={handleLogin} className="space-y-5">
-            <input type="email" placeholder="Admin Email" defaultValue="owner@studio101.com" className="w-full bg-white/5 border border-white/10 px-4 py-3 text-xs text-white focus:outline-none focus:border-white transition-colors" required />
+            <input type="email" placeholder="Admin Email" defaultValue="owner@studio1O1.com" className="w-full bg-white/5 border border-white/10 px-4 py-3 text-xs text-white focus:outline-none focus:border-white transition-colors" required />
             <input type="password" placeholder="Password" defaultValue="••••••••" className="w-full bg-white/5 border border-white/10 px-4 py-3 text-xs text-white focus:outline-none focus:border-white transition-colors" required />
             <button type="submit" className="w-full bg-white text-[#1A1A1A] py-3 text-xs uppercase tracking-widest font-bold hover:bg-[#F4F2EE] transition-colors mt-4">Authenticate Engine</button>
           </form>
@@ -194,7 +194,7 @@ export default function AdminDashboard() {
       <header className="bg-[#1A1A1A] text-white py-4 px-6 border-b border-white/10 sticky top-0 z-40 shadow-md">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center space-x-4">
-             <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center border border-white/20"><span className="font-serif font-bold text-[10px]">101</span></div>
+             <div className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center border border-white/20"><span className="font-serif font-bold text-[10px]">1O1</span></div>
              <div><h1 className="text-sm font-serif tracking-wide">Command Center</h1><p className="text-[9px] text-white/50 uppercase tracking-widest">Live Auto-Engine</p></div>
           </div>
           <button onClick={() => setIsAuthenticated(false)} className="text-[10px] uppercase tracking-widest text-white/50 hover:text-white transition-colors">Terminate Session</button>

@@ -10,18 +10,18 @@ export default function Footer() {
           <div className="w-12 h-12 rounded-full overflow-hidden relative shadow-sm bg-[#E6E2DA]">
             <img
               src="/images/ui-assets/logo.jpeg"
-              alt="Studio 101 Logo"
+              alt="Studio 1O1 Logo"
               className="absolute inset-0 w-full h-full object-cover origin-center"
               style={{ objectPosition: '50% 50%', transform: 'scale(1.70)' }}
             />
           </div>
-          <span className="text-white/90 font-serif lowercase text-base">@visit.studio101</span>
+          <span className="text-white/90 font-serif lowercase text-base">@visit.studio1O1</span>
         </div>
 
         {/* 2. Middle Column: flex-1 keeps it dead center, removed md:text-left */}
         <div className="flex-1 flex justify-center w-full">
           <p className="text-center font-normal text-sm">
-            © 2026 Studio 101. Built cleanly for verified production scale.
+            © 2026 Studio 1O1. Built cleanly for verified production scale.
           </p>
         </div>
 

@@ -50,7 +50,7 @@ export default function HomePage() {
             </h1>
             
             <p className={`max-w-xl mx-auto lg:mx-0 text-base md:text-lg text-[#1A1A1A]/60 font-light leading-relaxed transition-all duration-1000 delay-500 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
-              Welcome to Studio 101, where every corner tells a story and your vision comes to life. Your content gets a whole unique personality the moment you step inside.
+              Welcome to Studio 1O1, where every corner tells a story and your vision comes to life. Your content gets a whole unique personality the moment you step inside.
             </p>
             
             <div className={`pt-4 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 transition-all duration-1000 delay-700 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
@@ -84,7 +84,7 @@ export default function HomePage() {
                 <p className="font-serif uppercase tracking-tight text-lg text-[#1A1A1A]">"Without you, it's just walls."</p>
                 
                 <div className="flex justify-between items-end mt-3 border-t border-[#1A1A1A]/10 pt-3">
-                  <p className="text-[10px] uppercase tracking-widest text-[#1A1A1A]/60">Studio 101 Creative Engine</p>
+                  <p className="text-[10px] uppercase tracking-widest text-[#1A1A1A]/60">Studio 1O1 Creative Engine</p>
                   
                   <div className="flex space-x-1.5">
                     {heroImages.map((_, idx) => (
