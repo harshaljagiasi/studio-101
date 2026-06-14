@@ -2,8 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Routed to Archivo Black for all titles */
 .font-serif { 
-  font-family: 'Cormorant Garamond', serif; 
+  font-family: 'Archivo Black', sans-serif; 
+  font-weight: 400;
 }
 
 .font-sans { 

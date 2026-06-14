@@ -36,16 +36,17 @@ export default function HomePage() {
         
         <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
           
-          {/* TEXT COLUMN - Added order-2 lg:order-1 mt-8 lg:mt-0 */}
+          {/* TEXT COLUMN */}
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left order-2 lg:order-1 mt-8 lg:mt-0">
             <div className={`inline-flex items-center space-x-2 bg-[#1A1A1A]/5 px-3 py-1 rounded-full text-xs font-medium tracking-widest uppercase text-[#1A1A1A]/70 transition-all duration-1000 delay-100 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               <span>Stating to be one of a kind</span>
               <span className="text-amber-500 animate-pulse">✨</span>
             </div>
             
-            <h1 className={`font-serif text-5xl md:text-7xl font-normal tracking-tight text-[#1A1A1A] leading-[1.1] transition-all duration-1000 delay-300 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
+            {/* OPTIMIZED FOR ARCHIVO: Scaled mobile to 4xl, added uppercase and tight tracking, removed italic/light */}
+            <h1 className={`font-serif uppercase text-4xl md:text-6xl lg:text-7xl tracking-tighter text-[#1A1A1A] leading-[1.1] transition-all duration-1000 delay-300 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               Built for Creators,<br />
-              <span className="italic font-light text-[#1A1A1A]/80">Brands & Real Stories.</span>
+              <span className="text-[#1A1A1A]/80">Brands & Real Stories.</span>
             </h1>
             
             <p className={`max-w-xl mx-auto lg:mx-0 text-base md:text-lg text-[#1A1A1A]/60 font-light leading-relaxed transition-all duration-1000 delay-500 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
@@ -63,7 +64,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* CAROUSEL COLUMN - Added order-1 lg:order-2 */}
+          {/* CAROUSEL COLUMN */}
           <div className={`lg:col-span-5 relative transition-all duration-1000 delay-500 order-1 lg:order-2 ${isLoaded ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-12'}`}>
             
             <div className="relative w-full aspect-[4/5] bg-neutral-200 overflow-hidden rounded-[30px] shadow-2xl border border-[#1A1A1A]/10 group">
@@ -79,7 +80,8 @@ export default function HomePage() {
               <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/80 via-[#1A1A1A]/10 to-transparent z-20 pointer-events-none"></div>
               
               <div className="absolute bottom-6 left-6 right-6 p-6 bg-[#F4F2EE]/90 premium-blur border border-white/20 shadow-lg rounded-2xl z-30 transform transition-transform duration-500 group-hover:-translate-y-2">
-                <p className="font-serif text-lg italic text-[#1A1A1A]">"Without you, it's just walls."</p>
+                {/* OPTIMIZED FOR ARCHIVO: Removed italic, added tight tracking */}
+                <p className="font-serif uppercase tracking-tight text-lg text-[#1A1A1A]">"Without you, it's just walls."</p>
                 
                 <div className="flex justify-between items-end mt-3 border-t border-[#1A1A1A]/10 pt-3">
                   <p className="text-[10px] uppercase tracking-widest text-[#1A1A1A]/60">Studio 101 Creative Engine</p>
@@ -100,12 +102,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* EXPLORE SPACES CONTENT GRID (Completely untouched) */}
       {/* EXPLORE SPACES CONTENT GRID */}
       <section id="spaces" className="py-24 bg-[#EAE6DF] border-t border-[#1A1A1A]/5">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-            <h2 className="font-serif text-4xl md:text-5xl font-normal tracking-tight hover:scale-105 transition-transform duration-500 cursor-default">Explore Our Setup</h2>
+            {/* OPTIMIZED FOR ARCHIVO: Scaled mobile text, removed font-normal, added uppercase and tight tracking */}
+            <h2 className="font-serif text-3xl md:text-5xl uppercase tracking-tighter hover:scale-105 transition-transform duration-500 cursor-default">Explore Our Setup</h2>
             <div className="w-12 h-[1px] bg-[#1A1A1A]/40 mx-auto"></div>
             <p className="text-xs uppercase tracking-[0.2em] text-[#1A1A1A]/60">Every corner tells a completely unique story</p>
           </div>
@@ -121,7 +123,7 @@ export default function HomePage() {
                 <div className="absolute inset-0 bg-[#1A1A1A]/10 group-hover:bg-transparent transition-colors duration-500"></div>
               </div>
               <div className="mt-4 flex justify-between items-baseline px-2">
-                <h3 className="font-serif text-xl font-medium text-[#1A1A1A]">The Cyc Wall</h3>
+                <h3 className="font-serif text-lg md:text-xl uppercase tracking-tight text-[#1A1A1A]">The Cyc Wall</h3>
                 <span className="text-xs uppercase tracking-widest text-[#1A1A1A]/50 group-hover:text-amber-700 transition-colors duration-300">Infinite White Canvas</span>
               </div>
               <p className="text-xs text-[#1A1A1A]/60 mt-1 font-light px-2">High-key production zone paired with professional softboxes and boom mounts for clean catalogs, high-end e-commerce, and brand lookbooks.</p>
@@ -137,7 +139,7 @@ export default function HomePage() {
                 <div className="absolute inset-0 bg-[#1A1A1A]/10 group-hover:bg-transparent transition-colors duration-500"></div>
               </div>
               <div className="mt-4 flex justify-between items-baseline px-2">
-                <h3 className="font-serif text-xl font-medium text-[#1A1A1A]">Editorial Arch & Props</h3>
+                <h3 className="font-serif text-lg md:text-xl uppercase tracking-tight text-[#1A1A1A]">Editorial Arch & Props</h3>
                 <span className="text-xs uppercase tracking-widest text-[#1A1A1A]/50 group-hover:text-amber-700 transition-colors duration-300">Warm Minimalism</span>
               </div>
               <p className="text-xs text-[#1A1A1A]/60 mt-1 font-light px-2">Classic, clean molded structural alcove environments. Outfitted with high-seating bar stools and subtle design props for modern profile framing.</p>
@@ -153,7 +155,7 @@ export default function HomePage() {
                 <div className="absolute inset-0 bg-[#1A1A1A]/10 group-hover:bg-transparent transition-colors duration-500"></div>
               </div>
               <div className="mt-4 flex justify-between items-baseline px-2">
-                <h3 className="font-serif text-xl font-medium text-[#1A1A1A]">The Podcast Suite</h3>
+                <h3 className="font-serif text-lg md:text-xl uppercase tracking-tight text-[#1A1A1A]">The Podcast Suite</h3>
               </div>
               <p className="text-xs text-[#1A1A1A]/60 mt-1 font-light px-2">Acoustically friendly, multi-angle seating configurations designed specifically for premium video podcasts, high-end interviews, and deep-dive conversational content.</p>
             </div>
@@ -168,7 +170,7 @@ export default function HomePage() {
                 <div className="absolute inset-0 bg-[#1A1A1A]/10 group-hover:bg-transparent transition-colors duration-500"></div>
               </div>
               <div className="mt-4 flex justify-between items-baseline px-2">
-                <h3 className="font-serif text-xl font-medium text-[#1A1A1A]">Glam & Vanity Area</h3>
+                <h3 className="font-serif text-lg md:text-xl uppercase tracking-tight text-[#1A1A1A]">Glam & Vanity Area</h3>
                 <span className="text-xs uppercase tracking-widest text-[#1A1A1A]/50 group-hover:text-amber-700 transition-colors duration-300">Backstage Premium</span>
               </div>
               <p className="text-xs text-[#1A1A1A]/60 mt-1 font-light px-2">Hollywood bulb-lined preparation mirrors paired with playful staging props (including the iconic giant studio panda) for warm b-roll or getting-ready content.</p>
