@@ -6,27 +6,36 @@ import Link from 'next/link';
 export default function HomePage() {
   const [isLoaded, setIsLoaded] = useState(false);
   
-  // --- CAROUSEL STATE LOGIC ---
+  // --- CAROUSEL & LIGHTBOX STATE LOGIC ---
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isExpanded, setIsExpanded] = useState(false); 
   
-  // Array of images for the carousel
+  // Array of your newly uploaded images
   const heroImages = [
-    "https://images.unsplash.com/photo-1595814433015-e6f5ce69614e?q=80&w=600&auto=format&fit=crop", 
-    "/images/studio-rooms/DSC01877.jpg",
-    "/images/studio-rooms/props.jpg",
-    "/images/studio-rooms/creative lounge.jpg"
+    "/images/studio-rooms/img1.jpg", 
+    "/images/studio-rooms/img2.jpg",
+    "/images/studio-rooms/img3.jpg",
+    "/images/studio-rooms/img4.jpg"
   ];
 
   useEffect(() => {
     setIsLoaded(true);
     
-    // Changes the slide every 2 seconds
+    // Changes the slide every 2 seconds, but pauses if the lightbox is open
     const timer = setInterval(() => {
-      setCurrentSlide((prevSlide) => (prevSlide + 1) % heroImages.length);
+      if (!isExpanded) {
+        setCurrentSlide((prevSlide) => (prevSlide + 1) % heroImages.length);
+      }
     }, 2000);
     
     return () => clearInterval(timer);
-  }, [heroImages.length]);
+  }, [heroImages.length, isExpanded]);
+
+  // Lock background scroll when lightbox is open
+  useEffect(() => {
+    if (isExpanded) document.body.style.overflow = 'hidden';
+    else document.body.style.overflow = 'unset';
+  }, [isExpanded]);
 
   return (
     <>
@@ -43,7 +52,7 @@ export default function HomePage() {
               <span className="text-amber-500 animate-pulse">✨</span>
             </div>
             
-            {/* OPTIMIZED FOR ARCHIVO: Scaled mobile to 4xl, added uppercase and tight tracking, removed italic/light */}
+            {/* OPTIMIZED FOR ARCHIVO */}
             <h1 className={`font-serif uppercase text-4xl md:text-6xl lg:text-7xl tracking-tighter text-[#1A1A1A] leading-[1.1] transition-all duration-1000 delay-300 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               Built for Creators,<br />
               <span className="text-[#1A1A1A]/80">Brands & Real Stories.</span>
@@ -69,6 +78,14 @@ export default function HomePage() {
             
             <div className="relative w-full aspect-[4/5] bg-neutral-200 overflow-hidden rounded-[30px] shadow-2xl border border-[#1A1A1A]/10 group">
               
+              {/* EXPAND BUTTON */}
+              <button 
+                onClick={() => setIsExpanded(true)}
+                className="absolute top-6 right-6 z-40 bg-[#F4F2EE]/80 premium-blur w-10 h-10 rounded-full flex items-center justify-center text-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-[#F4F2EE] transition-colors shadow-lg cursor-pointer"
+              >
+                <i className="fa-solid fa-expand text-sm"></i>
+              </button>
+
               {heroImages.map((img, index) => (
                 <div 
                   key={index}
@@ -80,7 +97,6 @@ export default function HomePage() {
               <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/80 via-[#1A1A1A]/10 to-transparent z-20 pointer-events-none"></div>
               
               <div className="absolute bottom-6 left-6 right-6 p-6 bg-[#F4F2EE]/90 premium-blur border border-white/20 shadow-lg rounded-2xl z-30 transform transition-transform duration-500 group-hover:-translate-y-2">
-                {/* OPTIMIZED FOR ARCHIVO: Removed italic, added tight tracking */}
                 <p className="font-serif uppercase tracking-tight text-lg text-[#1A1A1A]">"Without you, it's just walls."</p>
                 
                 <div className="flex justify-between items-end mt-3 border-t border-[#1A1A1A]/10 pt-3">
@@ -106,7 +122,6 @@ export default function HomePage() {
       <section id="spaces" className="py-24 bg-[#EAE6DF] border-t border-[#1A1A1A]/5">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
-            {/* OPTIMIZED FOR ARCHIVO: Scaled mobile text, removed font-normal, added uppercase and tight tracking */}
             <h2 className="font-serif text-3xl md:text-5xl uppercase tracking-tighter hover:scale-105 transition-transform duration-500 cursor-default">Explore Our Setup</h2>
             <div className="w-12 h-[1px] bg-[#1A1A1A]/40 mx-auto"></div>
             <p className="text-xs uppercase tracking-[0.2em] text-[#1A1A1A]/60">Every corner tells a completely unique story</p>
@@ -178,6 +193,40 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* FULL SCREEN LIGHTBOX MODAL */}
+      {isExpanded && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#1A1A1A]/95 premium-blur p-4 sm:p-12">
+          
+          {/* Close Button */}
+          <button 
+            onClick={() => setIsExpanded(false)}
+            className="absolute top-6 right-6 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-[#F4F2EE] transition-colors z-[110]"
+          >
+            <i className="fa-solid fa-xmark text-xl"></i>
+          </button>
+
+          {/* Uncropped Image Container (object-contain) */}
+          <div className="relative w-full max-w-6xl h-full flex items-center justify-center">
+            <img 
+              src={heroImages[currentSlide]} 
+              alt="Studio 1O1 Expanded View" 
+              className="max-w-full max-h-full object-contain rounded-lg shadow-2xl animate-fade-in"
+            />
+          </div>
+
+          {/* Image Counter */}
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3">
+            {heroImages.map((_, idx) => (
+              <button 
+                key={idx}
+                onClick={() => setCurrentSlide(idx)}
+                className={`h-1.5 rounded-full transition-all duration-300 ${currentSlide === idx ? 'w-8 bg-[#F4F2EE]' : 'w-2 bg-[#F4F2EE]/30 hover:bg-[#F4F2EE]/60'}`}
+              ></button>
+            ))}
+          </div>
+        </div>
+      )}
     </>
   );
 }
