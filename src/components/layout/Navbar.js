@@ -22,7 +22,7 @@ export default function Navbar() {
   };
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 bg-[#F4F2EE]/90 premium-blur border-b border-[#1A1A1A]/5 transition-all duration-500">
+    <header className="fixed top-0 left-0 w-full z-50 bg-[#e4e2df]/90 premium-blur border-b border-[#1A1A1A]/5 transition-all duration-500">
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
         
         {/* Logo Section (Elevated z-index to stay above mobile menu) */}
@@ -75,7 +75,7 @@ export default function Navbar() {
 
       {/* Mobile Full-Screen Menu Overlay */}
       <div 
-        className={`fixed top-0 left-0 w-full h-screen bg-[#F4F2EE] flex flex-col justify-center items-center space-y-8 transition-transform duration-700 z-[55] ${isOpen ? 'translate-y-0' : '-translate-y-full'}`}
+        className={`fixed top-0 left-0 w-full h-screen bg-[#e4e2df] flex flex-col justify-center items-center space-y-8 transition-transform duration-700 z-[55] ${isOpen ? 'translate-y-0' : '-translate-y-full'}`}
       >
         <Link href="/" onClick={closeMenu} className="text-2xl font-serif tracking-wide text-[#1A1A1A] hover:text-amber-700 transition-colors">Home</Link>
         <Link href="/#spaces" onClick={closeMenu} className="text-2xl font-serif tracking-wide text-[#1A1A1A] hover:text-amber-700 transition-colors">Explore Spaces</Link>
