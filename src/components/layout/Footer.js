@@ -15,17 +15,23 @@ export default function Footer() {
               style={{ objectPosition: '50% 50%', transform: 'scale(1.70)' }}
             />
           </div>
-          <span className="text-white/90 font-serif lowercase text-base">@visit.studio1O1</span>
+          {/* UPDATED: Applied the new Archivo Black styling (uppercase, tight tracking) */}
+          <span className="text-white/90 font-serif uppercase tracking-tight text-base">@visit.studio1O1</span>
         </div>
 
-        {/* 2. Middle Column: flex-1 keeps it dead center, removed md:text-left */}
-        <div className="flex-1 flex justify-center w-full">
-          <p className="text-center font-normal text-sm">
+        {/* 2. Middle Column: Added Privacy & Terms Links */}
+        <div className="flex-1 flex flex-col items-center justify-center w-full space-y-2">
+          <p className="text-center font-normal text-[11px] md:text-xs text-white/50">
             © 2026 Studio 1O1. Built cleanly for verified production scale.
           </p>
+          <div className="flex items-center space-x-4 text-[10px] uppercase tracking-widest text-white/30">
+            <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <span>|</span>
+            <Link href="/terms" className="hover:text-white transition-colors">Terms & Conditions</Link>
+          </div>
         </div>
 
-        {/* 3. Right Column: flex-1 and md:justify-end pushes icons to the right edge */}
+        {/* 3. Right Column: Social Links */}
         <div className="flex-1 flex justify-center md:justify-end space-x-6 text-white/90 text-lg w-full">
           <a href="https://www.instagram.com/visit.studio1o1/" target="_blank" rel="noopener noreferrer" className="hover:text-white hover:scale-110 transition-all">
             <i className="fa-brands fa-instagram"></i>
