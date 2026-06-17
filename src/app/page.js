@@ -43,7 +43,8 @@ export default function HomePage() {
   return (
     <>
       {/* HERO CANVAS SECTION */}
-      <section id="home" className="relative pt-12 min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#EAE6DF] via-[#F4F2EE] to-[#E3DDD5] ambient-hero">
+      {/* FIXED: Reduced pt-12 to pt-2 on mobile to remove the white patch */}
+      <section id="home" className="relative pt-2 md:pt-12 min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#EAE6DF] via-[#F4F2EE] to-[#E3DDD5] ambient-hero">
         <div className="absolute inset-y-0 right-0 w-1/3 bg-[#E6E1DA] opacity-40 rounded-l-[200px] pointer-events-none transform translate-x-20 transition-transform duration-1000"></div>
         
         <div className="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
@@ -79,12 +80,13 @@ export default function HomePage() {
           {/* CAROUSEL COLUMN */}
           <div className={`lg:col-span-5 relative transition-all duration-1000 delay-500 order-1 lg:order-2 ${isLoaded ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-12'}`}>
             
-            <div className="relative w-full aspect-[4/5] bg-neutral-200 overflow-hidden rounded-[30px] shadow-2xl border border-[#1A1A1A]/10 group">
+            {/* FIXED: Added aspect-[3/4] for mobile to make the carousel taller, md:aspect-[4/5] keeps desktop the same */}
+            <div className="relative w-full aspect-[3/4] md:aspect-[4/5] bg-neutral-200 overflow-hidden rounded-[20px] md:rounded-[30px] shadow-2xl border border-[#1A1A1A]/10 group">
               
               {/* EXPAND BUTTON */}
               <button 
                 onClick={() => setIsExpanded(true)}
-                className="absolute top-6 right-6 z-40 bg-[#F4F2EE]/80 premium-blur w-10 h-10 rounded-full flex items-center justify-center text-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-[#F4F2EE] transition-colors shadow-lg cursor-pointer"
+                className="absolute top-4 right-4 md:top-6 md:right-6 z-40 bg-[#F4F2EE]/80 premium-blur w-10 h-10 rounded-full flex items-center justify-center text-[#1A1A1A] hover:bg-[#1A1A1A] hover:text-[#F4F2EE] transition-colors shadow-lg cursor-pointer"
               >
                 <i className="fa-solid fa-expand text-sm"></i>
               </button>
@@ -99,11 +101,13 @@ export default function HomePage() {
 
               <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/80 via-[#1A1A1A]/10 to-transparent z-20 pointer-events-none"></div>
               
-              <div className="absolute bottom-6 left-6 right-6 p-6 bg-[#F4F2EE]/90 premium-blur border border-white/20 shadow-lg rounded-2xl z-30 transform transition-transform duration-500 group-hover:-translate-y-2">
-                <p className="font-serif uppercase tracking-tight text-lg text-[#1A1A1A]">"Without you, it's just walls."</p>
+              {/* FIXED: Reduced padding/margins on mobile (p-3, bottom-3, left-3, right-3) so the box doesn't cover the image */}
+              <div className="absolute bottom-3 left-3 right-3 p-3 md:bottom-6 md:left-6 md:right-6 md:p-6 bg-[#F4F2EE]/90 premium-blur border border-white/20 shadow-lg rounded-xl md:rounded-2xl z-30 transform transition-transform duration-500 group-hover:-translate-y-2">
+                <p className="font-serif uppercase tracking-tight text-sm md:text-lg text-[#1A1A1A]">"Without you, it's just walls."</p>
                 
-                <div className="flex justify-between items-end mt-3 border-t border-[#1A1A1A]/10 pt-3">
-                  <p className="text-[10px] uppercase tracking-widest text-[#1A1A1A]/60">Studio 1O1 Creative Engine</p>
+                {/* FIXED: Reduced internal spacing and font size for mobile */}
+                <div className="flex justify-between items-end mt-2 pt-2 md:mt-3 border-t border-[#1A1A1A]/10 md:pt-3">
+                  <p className="text-[8px] md:text-[10px] uppercase tracking-widest text-[#1A1A1A]/60">Studio 1O1 Creative Engine</p>
                   
                   <div className="flex space-x-1.5">
                     {heroImages.map((_, idx) => (
