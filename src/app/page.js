@@ -12,10 +12,13 @@ export default function HomePage() {
   
   // Array of your newly uploaded images
   const heroImages = [
-    "/images/studio-rooms/img1.jpg", 
-    "/images/studio-rooms/img2.jpg",
-    "/images/studio-rooms/img3.jpg",
-    "/images/studio-rooms/img4.jpg"
+    "https://xbhjegleqavecszkbnzg.supabase.co/storage/v1/object/public/studio-images/img1.jpg", 
+    "https://xbhjegleqavecszkbnzg.supabase.co/storage/v1/object/public/studio-images/img2.jpg",
+    "https://xbhjegleqavecszkbnzg.supabase.co/storage/v1/object/public/studio-images/img3.jpg",
+    "https://xbhjegleqavecszkbnzg.supabase.co/storage/v1/object/public/studio-images/img4.jpg",
+    "https://xbhjegleqavecszkbnzg.supabase.co/storage/v1/object/public/studio-images/img5.jpg",
+    "https://xbhjegleqavecszkbnzg.supabase.co/storage/v1/object/public/studio-images/img6.jpg",
+    "https://xbhjegleqavecszkbnzg.supabase.co/storage/v1/object/public/studio-images/img7.jpg"
   ];
 
   useEffect(() => {
@@ -133,7 +136,7 @@ export default function HomePage() {
               <div className="relative aspect-video w-full overflow-hidden rounded-[16px] bg-neutral-200">
                 <div 
                   className="absolute inset-0 bg-contain bg-no-repeat bg-center transition-transform duration-1000 group-hover:scale-110" 
-                  style={{ backgroundImage: "url('/images/studio-rooms/DSC01877.jpg')" }}
+                  style={{ backgroundImage: "url('https://xbhjegleqavecszkbnzg.supabase.co/storage/v1/object/public/studio-images/cyc%20wall.jpg')" }}
                 ></div>
                 <div className="absolute inset-0 bg-[#1A1A1A]/10 group-hover:bg-transparent transition-colors duration-500"></div>
               </div>
@@ -149,7 +152,7 @@ export default function HomePage() {
               <div className="relative aspect-video w-full overflow-hidden rounded-[16px] bg-neutral-200">
                 <div 
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-110" 
-                  style={{ backgroundImage: "url('/images/studio-rooms/props.jpg')" }}
+                  style={{ backgroundImage: "url('https://xbhjegleqavecszkbnzg.supabase.co/storage/v1/object/public/studio-images/props.jpg')" }}
                 ></div>
                 <div className="absolute inset-0 bg-[#1A1A1A]/10 group-hover:bg-transparent transition-colors duration-500"></div>
               </div>
@@ -165,7 +168,7 @@ export default function HomePage() {
               <div className="relative aspect-video w-full overflow-hidden rounded-[16px] bg-neutral-200">
                 <div 
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-110" 
-                  style={{ backgroundImage: "url('/images/studio-rooms/creative lounge.jpg')" }}
+                  style={{ backgroundImage: "url('https://xbhjegleqavecszkbnzg.supabase.co/storage/v1/object/public/studio-images/creative%20lounge.jpg')" }}
                 ></div>
                 <div className="absolute inset-0 bg-[#1A1A1A]/10 group-hover:bg-transparent transition-colors duration-500"></div>
               </div>
@@ -180,7 +183,7 @@ export default function HomePage() {
               <div className="relative aspect-video w-full overflow-hidden rounded-[16px] bg-neutral-200">
                 <div 
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-110" 
-                  style={{ backgroundImage: "url('/images/studio-rooms/vanity  room.jpg')" }}
+                  style={{ backgroundImage: "url('https://xbhjegleqavecszkbnzg.supabase.co/storage/v1/object/public/studio-images/vanity%20%20room.jpg')" }}
                 ></div>
                 <div className="absolute inset-0 bg-[#1A1A1A]/10 group-hover:bg-transparent transition-colors duration-500"></div>
               </div>
