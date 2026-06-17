@@ -1,19 +1,18 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
 import { supabase } from '../../lib/supabase';
 
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [activeTab, setActiveTab] = useState('upcoming'); // 'upcoming' | 'history' | 'inbox'
+  const [activeTab, setActiveTab] = useState('upcoming'); 
   const [viewMode, setViewMode] = useState('list'); 
   const [dateFilter, setDateFilter] = useState(null); 
   const [notification, setNotification] = useState(null);
 
   const [bookings, setBookings] = useState([]);
-  const [queries, setQueries] = useState([]); // NEW: State for contact messages
+  const [queries, setQueries] = useState([]); 
 
   // --- MODAL STATE ---
   const [editingBooking, setEditingBooking] = useState(null);
@@ -40,18 +39,15 @@ export default function AdminDashboard() {
     setIsLoaded(true);
   }, []);
 
-  // Fetch Live Data (Bookings & Queries)
   useEffect(() => {
     if (isAuthenticated) {
       const fetchData = async () => {
-        // Fetch Bookings
         const { data: bData, error: bError } = await supabase
           .from('bookings')
           .select('*')
           .order('created_at', { ascending: false }); 
         if (bData && !bError) setBookings(bData);
 
-        // Fetch Queries
         const { data: qData, error: qError } = await supabase
           .from('contact_queries')
           .select('*')
@@ -78,7 +74,6 @@ export default function AdminDashboard() {
     }
   };
 
-  // NEW: Handler for Contact Queries
   const handleQueryAction = async (id, newStatus) => {
     setQueries(prev => prev.map(q => q.id === id ? { ...q, status: newStatus } : q));
     await supabase.from('contact_queries').update({ status: newStatus }).eq('id', id);
@@ -87,7 +82,6 @@ export default function AdminDashboard() {
     setTimeout(() => setNotification(null), 4000);
   };
 
-  // --- SCHEDULE MODIFICATION ENGINE ---
   const openEditModal = (booking) => {
     setEditingBooking(booking);
     setEditSelectedSlots([...(booking.time_slots || [])]);
@@ -137,7 +131,6 @@ export default function AdminDashboard() {
     setEditingBooking(null);
   };
 
-  // --- AUTO-ARCHIVE LOGIC ---
   const checkIsPast = (booking) => {
     if (!booking.booking_date || !booking.time_slots || booking.time_slots.length === 0) return false;
     
@@ -152,7 +145,6 @@ export default function AdminDashboard() {
     return highestEndHour <= currentHour;
   };
 
-  // Sort buckets
   const upcomingBookings = bookings.filter(b => b.status === 'confirmed' && !checkIsPast(b));
   const historyBookings = bookings.filter(b => checkIsPast(b) || b.status === 'completed' || b.status === 'cancelled');
 
@@ -161,10 +153,8 @@ export default function AdminDashboard() {
     displayBookings = displayBookings.filter(b => b.booking_date.startsWith(`${dateFilter} `));
   }
 
-  // Calculate unread queries for the badge
   const unreadCount = queries.filter(q => q.status === 'unread').length;
 
-  // --- LOGIN SCREEN VIEW ---
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-[#1A1A1A] flex items-center justify-center relative overflow-hidden">
@@ -187,7 +177,6 @@ export default function AdminDashboard() {
     );
   }
 
-  // --- ADMIN DASHBOARD VIEW ---
   return (
     <div className="min-h-screen bg-[#F4F2EE] font-sans text-[#1A1A1A] pb-20 relative">
       
@@ -216,7 +205,6 @@ export default function AdminDashboard() {
             </button>
           </div>
           
-          {/* Hide Calendar/List toggle if on Inbox tab */}
           {activeTab !== 'inbox' && (
             <div className="flex space-x-2 pb-3">
               <button onClick={() => setViewMode('list')} className={`px-3 py-1 text-[10px] uppercase tracking-widest border transition-all ${viewMode === 'list' ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]' : 'border-[#1A1A1A]/20 text-[#1A1A1A]/60'}`}>List</button>
@@ -238,7 +226,6 @@ export default function AdminDashboard() {
         )}
 
         {activeTab === 'inbox' ? (
-          /* INBOX VIEW */
           <div className="bg-white border border-[#1A1A1A]/10 shadow-lg overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
@@ -290,7 +277,6 @@ export default function AdminDashboard() {
             </div>
           </div>
         ) : viewMode === 'list' ? (
-          /* BOOKINGS LIST VIEW */
           <div className="bg-white border border-[#1A1A1A]/10 shadow-lg overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
@@ -312,10 +298,17 @@ export default function AdminDashboard() {
                       return (
                         <tr key={booking.id} className="hover:bg-[#EAE6DF]/20 transition-colors group">
                           <td className="px-6 py-4 font-medium uppercase font-mono tracking-wider">{booking.id.split('-')[0]}</td>
+                          
                           <td className="px-6 py-4">
                             <p className="font-semibold">{booking.client_name}</p>
                             <p className="text-[10px] text-[#1A1A1A]/50 font-mono mt-0.5">{booking.client_phone}</p>
+                            
+                            {/* === NEW: EMAIL DISPLAY WITH EMERALD COLOR === */}
+                            {booking.client_email && (
+                              <p className="text-[10px] text-emerald-700 font-mono mt-0.5">{booking.client_email}</p>
+                            )}
                           </td>
+                          
                           <td className="px-6 py-4 max-w-[200px] truncate">
                             <p className="font-medium text-[#1A1A1A]/80">{booking.purpose}</p>
                             {booking.equipment_addons && booking.equipment_addons.length > 0 && (
@@ -370,7 +363,6 @@ export default function AdminDashboard() {
             </div>
           </div>
         ) : (
-          /* BOOKINGS CALENDAR GRID VIEW */
           <div className="bg-white border border-[#1A1A1A]/10 shadow-lg p-6">
             <div className="flex justify-between items-center mb-6">
               <h3 className="font-serif text-2xl text-[#1A1A1A]">{currentMonthName} {currentYear}</h3>
