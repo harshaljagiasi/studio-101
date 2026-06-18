@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-io'; // Double-check your local configuration path
+import { createClient } from '@supabase/supabase-js';
 
 // Initialize server-side Supabase using service role or standard keys
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
