@@ -123,9 +123,15 @@ export default function BookingPage() {
     );
   };
 
+  const GATEWAY_FEE_PERCENTAGE = 0.025; // 2.5% gateway charge
+
   const totalHoursCost = selectedTimes.length * STUDIO_HOURLY_RATE;
   const totalEquipmentCost = selectedEquipment.reduce((sum, item) => sum + Number(item.price), 0);
-  const finalLandedCost = totalHoursCost + totalEquipmentCost;
+  const baseTotal = totalHoursCost + totalEquipmentCost;
+
+  // Calculate gateway fee and round up to the nearest Rupee
+  const gatewayFee = baseTotal > 0 ? Math.ceil(baseTotal * GATEWAY_FEE_PERCENTAGE) : 0;
+  const finalLandedCost = baseTotal + gatewayFee;
 
   const executeLiveBooking = async () => {
   if (!selectedDate || selectedTimes.length === 0 || !purpose || !clientName || !clientPhone || !clientEmail) {
@@ -329,13 +335,37 @@ export default function BookingPage() {
                 </div>
               </div>
 
-              <div className="bg-[#F4F2EE] p-6 border border-[#1A1A1A]/10 shadow-sm space-y-3 text-xs transition-all duration-300">
-                <p className="text-[10px] uppercase tracking-widest text-[#1A1A1A]/50 mb-4 border-b border-[#1A1A1A]/5 pb-2">Cost Breakdown</p>
-                <div className="flex justify-between items-center text-[#1A1A1A]/80"><span>Full Studio Access ({selectedTimes.length} hrs)</span><span className="font-mono">₹{totalHoursCost}</span></div>
-                {selectedEquipment.map(eq => <div key={eq.id} className="flex justify-between items-center text-[#1A1A1A]/80"><span className="truncate pr-4 text-[#1A1A1A]/60">{eq.name}</span><span className="font-mono text-[#1A1A1A]/60">₹{eq.price}</span></div>)}
-                <div className="w-full h-[1px] bg-[#1A1A1A]/10 my-4"></div>
-                <div className="flex justify-between items-center font-bold text-sm text-[#1A1A1A]"><span className="uppercase tracking-widest text-[11px]">Landed Cost</span><span className="font-mono text-base">₹{finalLandedCost}</span></div>
-              </div>
+              {/* New Transparent Cost Breakdown UI */}
+<div className="bg-[#F4F2EE] p-6 border border-[#1A1A1A]/10 shadow-sm space-y-3 text-xs transition-all duration-300">
+  <p className="text-[10px] uppercase tracking-widest text-[#1A1A1A]/50 mb-4 border-b border-[#1A1A1A]/5 pb-2">Cost Breakdown</p>
+  
+  <div className="flex justify-between items-center text-[#1A1A1A]/80">
+    <span>Full Studio Access ({selectedTimes.length} hrs)</span>
+    <span className="font-mono">₹{totalHoursCost}</span>
+  </div>
+  
+  {selectedEquipment.map(eq => (
+    <div key={eq.id} className="flex justify-between items-center text-[#1A1A1A]/80">
+      <span className="truncate pr-4 text-[#1A1A1A]/60">{eq.name}</span>
+      <span className="font-mono text-[#1A1A1A]/60">₹{eq.price}</span>
+    </div>
+  ))}
+
+  {/* New Gateway Fee Row */}
+  {baseTotal > 0 && (
+    <div className="flex justify-between items-center text-amber-700/80 pt-2">
+      <span>Platform & Gateway Fee (2.5%)</span>
+      <span className="font-mono">₹{gatewayFee}</span>
+    </div>
+  )}
+
+  <div className="w-full h-[1px] bg-[#1A1A1A]/10 my-4"></div>
+  
+  <div className="flex justify-between items-center font-bold text-sm text-[#1A1A1A]">
+    <span className="uppercase tracking-widest text-[11px]">Landed Cost</span>
+    <span className="font-mono text-base">₹{finalLandedCost}</span>
+  </div>
+</div>
             </div>
 
             <button onClick={executeLiveBooking} disabled={isSubmitting || finalLandedCost === 0} className="w-full bg-[#1A1A1A] text-white py-5 text-[11px] uppercase tracking-widest font-bold mt-8 transition-all duration-500 hover:bg-[#333333] hover:-translate-y-1 disabled:opacity-50 disabled:hover:translate-y-0 disabled:cursor-not-allowed shadow-lg hover:shadow-xl">
