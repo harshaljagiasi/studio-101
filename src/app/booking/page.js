@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { supabase } from '../../lib/supabase';
+import { supabase } from '../../lib/supabase'; 
 
 export default function BookingPage() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -22,8 +22,11 @@ export default function BookingPage() {
   const [purpose, setPurpose] = useState("");
   const [customPurpose, setCustomPurpose] = useState("");
   const [selectedEquipment, setSelectedEquipment] = useState([]); 
+  
+  // --- CLIENT IDENTIFICATION STATE ---
   const [clientName, setClientName] = useState("");
   const [clientPhone, setClientPhone] = useState("");
+  const [clientEmail, setClientEmail] = useState(""); // <-- Email State
 
   // Business Logic Variables
   const STUDIO_HOURLY_RATE = 2000; 
@@ -36,7 +39,6 @@ export default function BookingPage() {
   const now = new Date();
   const currentHour = now.getHours();
   
-  // Calculate exactly 90 days from today
   const generate90Days = () => {
     const days = [];
     for (let i = 0; i <= 90; i++) {
@@ -54,33 +56,32 @@ export default function BookingPage() {
 
   const allAvailableDays = generate90Days();
 
-  // Extract unique months from our 90-day window for the dropdown
   const availableMonths = [...new Map(allAvailableDays.map(item =>
     [`${item.monthName} ${item.year}`, { name: item.monthName, year: item.year, num: item.monthNum }]
   )).values()];
 
-  // State for the calendar view
   const [viewingMonth, setViewingMonth] = useState(`${availableMonths[0].name} ${availableMonths[0].year}`);
 
-  // Filter the days to display based on the currently selected month in the dropdown
   const daysToDisplay = allAvailableDays.filter(
     d => `${d.monthName} ${d.year}` === viewingMonth
   );
 
   const daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
-  // Generate 1-hour slots from 7 AM to 10 PM (15 slots total)
   const allTimeSlots = Array.from({ length: 15 }, (_, i) => {
     const start = i + 7;
     return `${start < 10 ? '0' + start : start}:00 - ${start + 1 < 10 ? '0' + (start + 1) : start + 1}:00`;
   });
 
-  // 1. Initial Load State
   useEffect(() => {
     setIsLoaded(true);
+    // Inject Cashfree checkout script execution framework safely
+    const script = document.createElement("script");
+    script.src = "https://sdk.cashfree.com/js/v3/cashfree.js";
+    script.async = true;
+    document.body.appendChild(script);
   }, []);
 
-  // 2. Fetch unavailable slots whenever the user selects a date
   useEffect(() => {
     const fetchBookedSlots = async () => {
       if (!selectedDate) {
@@ -105,7 +106,6 @@ export default function BookingPage() {
     fetchBookedSlots();
   }, [selectedDate]);
 
-  // UI Handlers
   const handleDateSelect = (dayObj) => {
     setSelectedDate(dayObj);
     setSelectedTimes([]); 
@@ -123,51 +123,61 @@ export default function BookingPage() {
     );
   };
 
-  // Dynamic Cost Calculations
   const totalHoursCost = selectedTimes.length * STUDIO_HOURLY_RATE;
   const totalEquipmentCost = selectedEquipment.reduce((sum, item) => sum + Number(item.price), 0);
   const finalLandedCost = totalHoursCost + totalEquipmentCost;
 
-  // The Live Auto-Confirmation Function
   const executeLiveBooking = async () => {
-    if (!selectedDate || selectedTimes.length === 0 || !purpose || !clientName || !clientPhone) {
-      alert('Please complete all form fields to process payment and confirm booking.');
-      return;
+  if (!selectedDate || selectedTimes.length === 0 || !purpose || !clientName || !clientPhone || !clientEmail) {
+    alert('Please complete all form fields to initialize secure payment gateways.');
+    return;
+  }
+
+  setIsSubmitting(true);
+  const dateString = `${selectedDate.day} ${selectedDate.monthName} ${selectedDate.year}`;
+
+  try {
+    // 1. Post to backend route to provision secure database tracking tokens 
+    const response = await fetch('/api/cashfree/create-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        clientName,
+        clientPhone,
+        clientEmail,
+        bookingDate: dateString,
+        selectedTimes,
+        purpose,
+        customPurpose: purpose === "Other (Custom)" ? customPurpose : null,
+        selectedEquipment,
+        fee: finalLandedCost
+      })
+    });
+
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Failed to initialize security session keys.");
+
+    // 2. Trigger the compiled Cashfree library interface elements
+    if (window.Cashfree) {
+      const cashfree = window.Cashfree({
+        mode: process.env.NEXT_PUBLIC_CASHFREE_ENV || "sandbox" // reads configurations matching operational system parameters
+      });
+
+      await cashfree.checkout({
+        paymentSessionId: data.paymentSessionId,
+        redirectTarget: "_self" // smooth single-page flow optimization redirections
+      });
+    } else {
+      throw new Error("Payment Gateway SDK failed to process checkout array initialization correctly.");
     }
 
-    setIsSubmitting(true);
-
-    const dateString = `${selectedDate.day} ${selectedDate.monthName} ${selectedDate.year}`;
-
-    const { error } = await supabase.from('bookings').insert([{
-      client_name: clientName,
-      client_phone: clientPhone,
-      booking_date: dateString, 
-      time_slots: selectedTimes, 
-      purpose: purpose,
-      custom_purpose: purpose === "Other (Custom)" ? customPurpose : null,
-      equipment_addons: selectedEquipment, 
-      fee: finalLandedCost,
-      status: 'confirmed' 
-    }]);
-
+  } catch (err) {
+    console.error(err);
+    alert(err.message || "An exception error occurred during initialization pipelines.");
+  } finally {
     setIsSubmitting(false);
-
-    if (error) {
-      console.error(error);
-      alert("System failed to secure slot. Someone may have just booked this block.");
-      return;
-    }
-
-    setNotification({ name: clientName, cost: finalLandedCost });
-    
-    setBookedSlots(prev => [...prev, ...selectedTimes]);
-    
-    setSelectedDate(null); setSelectedTimes([]); setPurpose(""); 
-    setCustomPurpose(""); setSelectedEquipment([]); setClientName(""); setClientPhone("");
-    
-    setTimeout(() => setNotification(null), 10000);
-  };
+  }
+};
 
   return (
     <section className="py-24 bg-gradient-to-b from-[#F4F2EE] to-[#EAE6DF] relative min-h-screen">
@@ -189,13 +199,12 @@ export default function BookingPage() {
                 <div className="flex items-center justify-between mb-4">
                   <label className="block text-[10px] uppercase tracking-widest text-[#1A1A1A]/60 font-medium">1. Schedule Matrix</label>
                   
-                  {/* UPDATED: Premium Custom Month Dropdown */}
                   <div className="relative">
                     <select 
                       value={viewingMonth} 
                       onChange={(e) => {
                         setViewingMonth(e.target.value);
-                        setSelectedDate(null); // Clear selection if month changes
+                        setSelectedDate(null);
                         setSelectedTimes([]);
                       }}
                       className="appearance-none bg-transparent border-b border-[#1A1A1A]/20 pb-1 pr-6 text-xs font-serif font-bold tracking-widest uppercase text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A] cursor-pointer transition-colors"
@@ -218,7 +227,6 @@ export default function BookingPage() {
                     <div key={idx} className="font-semibold text-[#1A1A1A]/40 pb-2 text-[10px]">{day}</div>
                   ))}
                   
-                  {/* Calculate empty spaces for the first day of the displayed month */}
                   {Array.from({ length: new Date(daysToDisplay[0]?.year, daysToDisplay[0]?.monthNum, 1).getDay() }).map((_, idx) => (
                     <div key={`empty-${idx}`}></div>
                   ))}
@@ -249,8 +257,6 @@ export default function BookingPage() {
                 <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
                   {allTimeSlots.map(slot => {
                     const slotStartHour = parseInt(slot.split(':')[0], 10);
-                    
-                    // Check if the selected date is TODAY, and if so, block past hours
                     const isToday = selectedDate?.fullDate.getDate() === now.getDate() && selectedDate?.fullDate.getMonth() === now.getMonth();
                     const isPastHourToday = isToday && slotStartHour <= currentHour;
                     
@@ -281,7 +287,6 @@ export default function BookingPage() {
             {/* 2. Purpose of Visit */}
             <div className="space-y-4 relative group">
               <label className="block text-[10px] uppercase tracking-widest text-[#1A1A1A]/60 font-medium">2. Production Purpose</label>
-              {/* UPDATED: Added 'capitalize' to the select tag */}
               <select value={purpose} onChange={(e) => setPurpose(e.target.value)} className="w-full bg-[#EAE6DF] border border-[#1A1A1A]/10 px-4 py-4 text-xs capitalize focus:outline-none focus:border-[#1A1A1A] cursor-pointer appearance-none transition-all duration-300 text-[#1A1A1A]">
                 <option value="" disabled className="normal-case">Select the primary goal of your shoot...</option>
                 {purposes.map(p => <option key={p} value={p}>{p}</option>)}
@@ -294,21 +299,17 @@ export default function BookingPage() {
             {/* 3. Dynamic Equipment Add-ons */}
             <div className="space-y-4">
               <label className="block text-[10px] uppercase tracking-widest text-[#1A1A1A]/60 font-medium">3. Hardware & Crew Add-ons (Optional)</label>
-              {equipmentList.length === 0 ? (
-                <p className="text-xs text-[#1A1A1A]/50 italic border border-[#1A1A1A]/5 p-4 text-center">Loading inventory...</p>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {equipmentList.map(item => {
-                    const isSelected = selectedEquipment.some(e => e.id === item.id);
-                    return (
-                      <div key={item.id} onClick={() => toggleEquipment(item)} className={`p-4 border cursor-pointer transition-all duration-300 flex justify-between items-center group ${isSelected ? 'bg-[#1A1A1A] border-[#1A1A1A] text-white shadow-md scale-[1.02]' : 'bg-[#EAE6DF] border-[#1A1A1A]/10 text-[#1A1A1A] hover:bg-white hover:shadow-sm'}`}>
-                        <span className="text-xs font-medium flex-1 pr-4">{item.name}</span>
-                        <span className={`text-[10px] tracking-widest font-mono whitespace-nowrap flex-shrink-0 ${isSelected ? 'text-emerald-400' : 'text-[#1A1A1A]/50 group-hover:text-[#1A1A1A]'}`}>+₹{item.price}</span>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {equipmentList.map(item => {
+                  const isSelected = selectedEquipment.some(e => e.id === item.id);
+                  return (
+                    <div key={item.id} onClick={() => toggleEquipment(item)} className={`p-4 border cursor-pointer transition-all duration-300 flex justify-between items-center group ${isSelected ? 'bg-[#1A1A1A] border-[#1A1A1A] text-white shadow-md scale-[1.02]' : 'bg-[#EAE6DF] border-[#1A1A1A]/10 text-[#1A1A1A] hover:bg-white hover:shadow-sm'}`}>
+                      <span className="text-xs font-medium flex-1 pr-4">{item.name}</span>
+                      <span className={`text-[10px] tracking-widest font-mono whitespace-nowrap flex-shrink-0 ${isSelected ? 'text-emerald-400' : 'text-[#1A1A1A]/50 group-hover:text-[#1A1A1A]'}`}>+₹{item.price}</span>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
 
           </div>
@@ -320,6 +321,10 @@ export default function BookingPage() {
                 <h4 className="font-serif text-xl border-b border-[#1A1A1A]/10 pb-3 text-[#1A1A1A] mb-4">Client Identification</h4>
                 <div className="space-y-3">
                   <input type="text" value={clientName} onChange={(e) => setClientName(e.target.value)} placeholder="e.g., Client Name" className="w-full bg-[#F4F2EE] border border-[#1A1A1A]/10 px-4 py-3.5 text-xs focus:outline-none focus:border-[#1A1A1A] transition-colors" />
+                  
+                  {/* === NEW EMAIL INPUT BOX === */}
+                  <input type="email" value={clientEmail} onChange={(e) => setClientEmail(e.target.value)} placeholder="Email Address for Receipt" className="w-full bg-[#F4F2EE] border border-[#1A1A1A]/10 px-4 py-3.5 text-xs focus:outline-none focus:border-[#1A1A1A] transition-colors" />
+                  
                   <input type="tel" value={clientPhone} onChange={(e) => setClientPhone(e.target.value)} placeholder="WhatsApp Number" className="w-full bg-[#F4F2EE] border border-[#1A1A1A]/10 px-4 py-3.5 text-xs focus:outline-none focus:border-[#1A1A1A] transition-colors" />
                 </div>
               </div>
