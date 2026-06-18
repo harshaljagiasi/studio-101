@@ -3,7 +3,10 @@ import { NextResponse } from 'next/server';
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { clientPhone, clientName, clientEmail, fee, orderId } = body;
+    const { clientPhone, clientName, clientEmail, fee } = body;
+
+    // --- FIX: GENERATE UNIQUE ORDER ID HERE ---
+    const orderId = `ST101_ORD_${Date.now()}`;
 
     const isProd = process.env.CASHFREE_ENV === 'production';
     const cashfreeUrl = isProd 
@@ -39,6 +42,7 @@ export async function POST(request) {
     const cashfreeData = await response.json();
 
     if (!response.ok) {
+      // This throws the exact error from Cashfree back to the frontend
       throw new Error(cashfreeData.message || 'Cashfree Order creation failed');
     }
 
