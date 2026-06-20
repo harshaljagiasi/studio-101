@@ -25,8 +25,8 @@ export async function POST(request) {
         customer_phone: clientPhone,
       },
       order_meta: {
-        // --- USING THE DYNAMIC URL HERE ---
-        return_url: `${origin}/booking/verify?order_id={order_id}`,
+        // Hardcoded to your exact live GoDaddy domain to prevent Vercel preview errors
+        return_url: "https://studio1o1.com/booking/verify?order_id={order_id}",
       }
     };
 
