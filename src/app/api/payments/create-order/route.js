@@ -3,10 +3,11 @@ import { NextResponse } from 'next/server';
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { clientPhone, clientName, clientEmail, fee } = body;
+    const { clientPhone, clientName, clientEmail, fee, orderId } = body;
 
-    // --- FIX: GENERATE UNIQUE ORDER ID HERE ---
-    const orderId = `ST101_ORD_${Date.now()}`;
+    // --- BULLETPROOF FIX: DYNAMICALLY DETECT THE URL ---
+    // This grabs the exact URL the user is currently on, bypassing Vercel env variables
+    const origin = request.headers.get('origin') || 'https://studio1o1.com';
 
     const isProd = process.env.CASHFREE_ENV === 'production';
     const cashfreeUrl = isProd 
@@ -24,7 +25,8 @@ export async function POST(request) {
         customer_phone: clientPhone,
       },
       order_meta: {
-        return_url: `${process.env.NEXT_PUBLIC_SITE_URL}/booking/verify?order_id={order_id}`,
+        // --- USING THE DYNAMIC URL HERE ---
+        return_url: `${origin}/booking/verify?order_id={order_id}`,
       }
     };
 
@@ -42,7 +44,6 @@ export async function POST(request) {
     const cashfreeData = await response.json();
 
     if (!response.ok) {
-      // This throws the exact error from Cashfree back to the frontend
       throw new Error(cashfreeData.message || 'Cashfree Order creation failed');
     }
 
