@@ -166,8 +166,8 @@ export default function BookingPage() {
     // 2. Trigger the compiled Cashfree library interface elements
     if (window.Cashfree) {
       const cashfree = window.Cashfree({
-        mode: process.env.NEXT_PUBLIC_CASHFREE_ENV || "sandbox" // reads configurations matching operational system parameters
-      });
+    mode: "production"
+  });
 
       await cashfree.checkout({
         paymentSessionId: data.paymentSessionId,
