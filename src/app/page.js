@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function HomePage() {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -43,7 +44,6 @@ export default function HomePage() {
   return (
     <>
       {/* HERO CANVAS SECTION */}
-      {/* FIXED: Reduced pt-12 to pt-2 on mobile to remove the white patch */}
       <section id="home" className="relative pt-2 md:pt-12 min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-[#EAE6DF] via-[#F4F2EE] to-[#E3DDD5] ambient-hero">
         <div className="absolute inset-y-0 right-0 w-1/3 bg-[#E6E1DA] opacity-40 rounded-l-[200px] pointer-events-none transform translate-x-20 transition-transform duration-1000"></div>
         
@@ -56,7 +56,6 @@ export default function HomePage() {
               <span className="text-amber-500 animate-pulse">✨</span>
             </div>
             
-            {/* OPTIMIZED FOR ARCHIVO */}
             <h1 className={`font-serif uppercase text-4xl md:text-6xl lg:text-7xl tracking-tighter text-[#1A1A1A] leading-[1.1] transition-all duration-1000 delay-300 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
               Built for Creators,<br />
               <span className="text-[#1A1A1A]/80">Brands & Real Stories.</span>
@@ -79,8 +78,6 @@ export default function HomePage() {
 
           {/* CAROUSEL COLUMN */}
           <div className={`lg:col-span-5 relative transition-all duration-1000 delay-500 order-1 lg:order-2 ${isLoaded ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-12'}`}>
-            
-            {/* FIXED: Added aspect-[3/4] for mobile to make the carousel taller, md:aspect-[4/5] keeps desktop the same */}
             <div className="relative w-full aspect-[3/4] md:aspect-[4/5] bg-neutral-200 overflow-hidden rounded-[20px] md:rounded-[30px] shadow-2xl border border-[#1A1A1A]/10 group">
               
               {/* EXPAND BUTTON */}
@@ -91,21 +88,28 @@ export default function HomePage() {
                 <i className="fa-solid fa-expand text-sm"></i>
               </button>
 
+              {/* NEXT.JS OPTIMIZED IMAGE RENDERER */}
               {heroImages.map((img, index) => (
                 <div 
                   key={index}
-                  className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ease-in-out ${currentSlide === index ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
-                  style={{ backgroundImage: `url('${img}')` }}
-                ></div>
+                  className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${currentSlide === index ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
+                >
+                  <Image 
+                    src={img}
+                    alt={`Studio 1O1 Showcase ${index + 1}`}
+                    fill
+                    priority={index === 0} // Magic Fix: Forces the very first image to load instantly
+                    className="object-cover object-center"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                  />
+                </div>
               ))}
 
               <div className="absolute inset-0 bg-gradient-to-t from-[#1A1A1A]/80 via-[#1A1A1A]/10 to-transparent z-20 pointer-events-none"></div>
               
-              {/* FIXED: Reduced padding/margins on mobile (p-3, bottom-3, left-3, right-3) so the box doesn't cover the image */}
               <div className="absolute bottom-3 left-3 right-3 p-3 md:bottom-6 md:left-6 md:right-6 md:p-6 bg-[#F4F2EE]/90 premium-blur border border-white/20 shadow-lg rounded-xl md:rounded-2xl z-30 transform transition-transform duration-500 group-hover:-translate-y-2">
                 <p className="font-serif uppercase tracking-tight text-sm md:text-lg text-[#1A1A1A]">"Without you, it's just walls."</p>
                 
-                {/* FIXED: Reduced internal spacing and font size for mobile */}
                 <div className="flex justify-between items-end mt-2 pt-2 md:mt-3 border-t border-[#1A1A1A]/10 md:pt-3">
                   <p className="text-[8px] md:text-[10px] uppercase tracking-widest text-[#1A1A1A]/60">Studio 1O1 Creative Engine</p>
                   
@@ -135,13 +139,17 @@ export default function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            
             {/* 1. THE CYC WALL */}
             <div className="bg-[#F4F2EE] p-4 border border-[#1A1A1A]/5 rounded-[24px] shadow-sm transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl group">
               <div className="relative aspect-video w-full overflow-hidden rounded-[16px] bg-neutral-200">
-                <div 
-                  className="absolute inset-0 bg-contain bg-no-repeat bg-center transition-transform duration-1000 group-hover:scale-110" 
-                  style={{ backgroundImage: "url('https://xbhjegleqavecszkbnzg.supabase.co/storage/v1/object/public/studio-images/cyc%20wall.jpg')" }}
-                ></div>
+                <Image 
+                  src="https://xbhjegleqavecszkbnzg.supabase.co/storage/v1/object/public/studio-images/cyc%20wall.jpg"
+                  alt="The Cyc Wall"
+                  fill
+                  className="object-contain object-center transition-transform duration-1000 group-hover:scale-110"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
                 <div className="absolute inset-0 bg-[#1A1A1A]/10 group-hover:bg-transparent transition-colors duration-500"></div>
               </div>
               <div className="mt-4 flex justify-between items-baseline px-2">
@@ -154,10 +162,13 @@ export default function HomePage() {
             {/* 2. EDITORIAL ARCH & PROPS */}
             <div className="bg-[#F4F2EE] p-4 border border-[#1A1A1A]/5 rounded-[24px] shadow-sm transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl group">
               <div className="relative aspect-video w-full overflow-hidden rounded-[16px] bg-neutral-200">
-                <div 
-                  className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-110" 
-                  style={{ backgroundImage: "url('https://xbhjegleqavecszkbnzg.supabase.co/storage/v1/object/public/studio-images/props.jpg')" }}
-                ></div>
+                <Image 
+                  src="https://xbhjegleqavecszkbnzg.supabase.co/storage/v1/object/public/studio-images/props.jpg"
+                  alt="Editorial Arch and Props"
+                  fill
+                  className="object-cover object-center transition-transform duration-1000 group-hover:scale-110"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
                 <div className="absolute inset-0 bg-[#1A1A1A]/10 group-hover:bg-transparent transition-colors duration-500"></div>
               </div>
               <div className="mt-4 flex justify-between items-baseline px-2">
@@ -170,10 +181,13 @@ export default function HomePage() {
             {/* 3. THE PODCAST SUITE */}
             <div className="bg-[#F4F2EE] p-4 border border-[#1A1A1A]/5 rounded-[24px] shadow-sm transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl group">
               <div className="relative aspect-video w-full overflow-hidden rounded-[16px] bg-neutral-200">
-                <div 
-                  className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-110" 
-                  style={{ backgroundImage: "url('https://xbhjegleqavecszkbnzg.supabase.co/storage/v1/object/public/studio-images/creative%20lounge.jpg')" }}
-                ></div>
+                <Image 
+                  src="https://xbhjegleqavecszkbnzg.supabase.co/storage/v1/object/public/studio-images/creative%20lounge.jpg"
+                  alt="The Podcast Suite"
+                  fill
+                  className="object-cover object-center transition-transform duration-1000 group-hover:scale-110"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
                 <div className="absolute inset-0 bg-[#1A1A1A]/10 group-hover:bg-transparent transition-colors duration-500"></div>
               </div>
               <div className="mt-4 flex justify-between items-baseline px-2">
@@ -185,10 +199,13 @@ export default function HomePage() {
             {/* 4. GLAM & VANITY AREA */}
             <div className="bg-[#F4F2EE] p-4 border border-[#1A1A1A]/5 rounded-[24px] shadow-sm transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl group">
               <div className="relative aspect-video w-full overflow-hidden rounded-[16px] bg-neutral-200">
-                <div 
-                  className="absolute inset-0 bg-cover bg-center transition-transform duration-1000 group-hover:scale-110" 
-                  style={{ backgroundImage: "url('https://xbhjegleqavecszkbnzg.supabase.co/storage/v1/object/public/studio-images/vanity%20%20room.jpg')" }}
-                ></div>
+                <Image 
+                  src="https://xbhjegleqavecszkbnzg.supabase.co/storage/v1/object/public/studio-images/vanity%20%20room.jpg"
+                  alt="Glam and Vanity Area"
+                  fill
+                  className="object-cover object-center transition-transform duration-1000 group-hover:scale-110"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
                 <div className="absolute inset-0 bg-[#1A1A1A]/10 group-hover:bg-transparent transition-colors duration-500"></div>
               </div>
               <div className="mt-4 flex justify-between items-baseline px-2">
@@ -205,7 +222,6 @@ export default function HomePage() {
       {isExpanded && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#1A1A1A]/95 premium-blur p-4 sm:p-12">
           
-          {/* Close Button */}
           <button 
             onClick={() => setIsExpanded(false)}
             className="absolute top-6 right-6 w-12 h-12 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-[#F4F2EE] transition-colors z-[110]"
@@ -213,17 +229,17 @@ export default function HomePage() {
             <i className="fa-solid fa-xmark text-xl"></i>
           </button>
 
-          {/* Uncropped Image Container (object-contain) */}
           <div className="relative w-full max-w-6xl h-full flex items-center justify-center">
-            <img 
+            <Image 
               src={heroImages[currentSlide]} 
               alt="Studio 1O1 Expanded View" 
-              className="max-w-full max-h-full object-contain rounded-lg shadow-2xl animate-fade-in"
+              fill
+              className="object-contain animate-fade-in"
+              sizes="100vw"
             />
           </div>
 
-          {/* Image Counter */}
-          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3">
+          <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex space-x-3 z-[110]">
             {heroImages.map((_, idx) => (
               <button 
                 key={idx}
