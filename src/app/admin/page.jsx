@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import { supabase } from '../../lib/supabase';
+import { supabase } from '../../lib/supabase'; // Adjust this import path if needed based on your folder structure
 
 export default function AdminDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loginError, setLoginError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [activeTab, setActiveTab] = useState('upcoming'); 
   const [viewMode, setViewMode] = useState('list'); 
@@ -14,10 +15,16 @@ export default function AdminDashboard() {
   const [bookings, setBookings] = useState([]);
   const [queries, setQueries] = useState([]); 
 
-  // --- MODAL STATE ---
+  // --- MODAL STATE (EDIT BOOKING) ---
   const [editingBooking, setEditingBooking] = useState(null);
   const [editSelectedSlots, setEditSelectedSlots] = useState([]);
   const [editDisabledSlots, setEditDisabledSlots] = useState([]);
+
+  // --- MODAL STATE (BLOCK SLOTS) ---
+  const [isBlockModalOpen, setIsBlockModalOpen] = useState(false);
+  const [blockDate, setBlockDate] = useState('');
+  const [blockReason, setBlockReason] = useState('Studio Maintenance');
+  const [blockSelectedSlots, setBlockSelectedSlots] = useState([]);
 
   // Current Time Variables 
   const now = new Date();
@@ -59,9 +66,19 @@ export default function AdminDashboard() {
     }
   }, [isAuthenticated]);
 
+  // --- SECURE LOGIN LOGIC ---
   const handleLogin = (e) => {
     e.preventDefault();
-    setIsAuthenticated(true);
+    
+    const enteredEmail = e.target.email.value;
+    const enteredPassword = e.target.password.value;
+
+    if (enteredEmail === "anishmakhija0@gmail.com" && enteredPassword === "Stay.1811") {
+      setIsAuthenticated(true);
+      setLoginError(false);
+    } else {
+      setLoginError(true);
+    }
   };
 
   const handleAction = async (id, newStatus) => {
@@ -82,6 +99,7 @@ export default function AdminDashboard() {
     setTimeout(() => setNotification(null), 4000);
   };
 
+  // --- EDIT BOOKING LOGIC ---
   const openEditModal = (booking) => {
     setEditingBooking(booking);
     setEditSelectedSlots([...(booking.time_slots || [])]);
@@ -131,6 +149,56 @@ export default function AdminDashboard() {
     setEditingBooking(null);
   };
 
+  // --- BLOCK SLOTS LOGIC ---
+  const formatHtmlDateToDb = (htmlDate) => {
+    if (!htmlDate) return '';
+    const d = new Date(htmlDate);
+    return `${d.getDate()} ${d.toLocaleString('default', { month: 'long' })} ${d.getFullYear()}`;
+  };
+
+  const disabledSlotsForBlockDate = blockDate 
+    ? bookings
+        .filter(b => b.booking_date === formatHtmlDateToDb(blockDate) && b.status !== 'cancelled')
+        .flatMap(b => b.time_slots || [])
+    : [];
+
+  const toggleBlockSlot = (slot) => {
+    setBlockSelectedSlots(prev => prev.includes(slot) ? prev.filter(t => t !== slot) : [...prev, slot].sort());
+  };
+
+  const executeSlotBlock = async () => {
+    if (!blockDate || blockSelectedSlots.length === 0) return;
+
+    const formattedDate = formatHtmlDateToDb(blockDate);
+    const blockPayload = {
+      client_name: 'STUDIO BLOCK',
+      client_email: 'admin@studio1o1.com',
+      client_phone: 'INTERNAL',
+      purpose: blockReason,
+      status: 'confirmed',
+      booking_date: formattedDate,
+      time_slots: blockSelectedSlots,
+      fee: 0,
+      cashfree_order_id: `admin_block_${Date.now()}`
+    };
+
+    const { data, error } = await supabase.from('bookings').insert([blockPayload]).select();
+
+    if (error) {
+      console.error('Blocking Error:', error);
+      setNotification('Error securing block.');
+    } else if (data) {
+      setBookings([data[0], ...bookings]);
+      setNotification('Time slots successfully blacked out.');
+    }
+
+    setIsBlockModalOpen(false);
+    setBlockSelectedSlots([]);
+    setBlockDate('');
+    setBlockReason('Studio Maintenance');
+  };
+
+  // --- FILTERING LOGIC ---
   const checkIsPast = (booking) => {
     if (!booking.booking_date || !booking.time_slots || booking.time_slots.length === 0) return false;
     
@@ -167,10 +235,32 @@ export default function AdminDashboard() {
             <h1 className="text-white font-serif text-2xl tracking-wide">Studio Command</h1>
             <p className="text-white/40 text-[10px] uppercase tracking-widest mt-2">Authorized Access Only</p>
           </div>
+          
           <form onSubmit={handleLogin} className="space-y-5">
-            <input type="email" placeholder="Admin Email" defaultValue="owner@studio1O1.com" className="w-full bg-white/5 border border-white/10 px-4 py-3 text-xs text-white focus:outline-none focus:border-white transition-colors" required />
-            <input type="password" placeholder="Password" defaultValue="••••••••" className="w-full bg-white/5 border border-white/10 px-4 py-3 text-xs text-white focus:outline-none focus:border-white transition-colors" required />
-            <button type="submit" className="w-full bg-white text-[#1A1A1A] py-3 text-xs uppercase tracking-widest font-bold hover:bg-[#F4F2EE] transition-colors mt-4">Authenticate Engine</button>
+            <input 
+              type="email" 
+              name="email" 
+              placeholder="Admin Email" 
+              className="w-full bg-white/5 border border-white/10 px-4 py-3 text-xs text-white focus:outline-none focus:border-white transition-colors" 
+              required 
+            />
+            <input 
+              type="password" 
+              name="password" 
+              placeholder="Password" 
+              className="w-full bg-white/5 border border-white/10 px-4 py-3 text-xs text-white focus:outline-none focus:border-white transition-colors" 
+              required 
+            />
+            
+            {loginError && (
+              <p className="text-red-400 text-[10px] uppercase tracking-widest text-center mt-2 font-bold animate-pulse">
+                Access Denied. Invalid Credentials.
+              </p>
+            )}
+
+            <button type="submit" className="w-full bg-white text-[#1A1A1A] py-3 text-xs uppercase tracking-widest font-bold hover:bg-[#F4F2EE] transition-colors mt-4">
+              Authenticate Engine
+            </button>
           </form>
         </div>
       </div>
@@ -206,9 +296,14 @@ export default function AdminDashboard() {
           </div>
           
           {activeTab !== 'inbox' && (
-            <div className="flex space-x-2 pb-3">
-              <button onClick={() => setViewMode('list')} className={`px-3 py-1 text-[10px] uppercase tracking-widest border transition-all ${viewMode === 'list' ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]' : 'border-[#1A1A1A]/20 text-[#1A1A1A]/60'}`}>List</button>
-              <button onClick={() => setViewMode('calendar')} className={`px-3 py-1 text-[10px] uppercase tracking-widest border transition-all ${viewMode === 'calendar' ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]' : 'border-[#1A1A1A]/20 text-[#1A1A1A]/60'}`}>Calendar</button>
+            <div className="flex items-center space-x-4 pb-3">
+              <button onClick={() => setIsBlockModalOpen(true)} className="px-4 py-1.5 text-[10px] uppercase tracking-widest font-bold bg-amber-500 hover:bg-amber-600 text-black transition-colors rounded-sm shadow-sm flex items-center">
+                <i className="fa-solid fa-lock mr-2"></i> Block Slots
+              </button>
+              <div className="flex space-x-2 border-l border-[#1A1A1A]/20 pl-4">
+                <button onClick={() => setViewMode('list')} className={`px-3 py-1 text-[10px] uppercase tracking-widest border transition-all ${viewMode === 'list' ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]' : 'border-[#1A1A1A]/20 text-[#1A1A1A]/60'}`}>List</button>
+                <button onClick={() => setViewMode('calendar')} className={`px-3 py-1 text-[10px] uppercase tracking-widest border transition-all ${viewMode === 'calendar' ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]' : 'border-[#1A1A1A]/20 text-[#1A1A1A]/60'}`}>Calendar</button>
+              </div>
             </div>
           )}
         </div>
@@ -295,23 +390,24 @@ export default function AdminDashboard() {
                   ) : (
                     displayBookings.map((booking) => {
                       const hasLogs = booking.extension_logs && booking.extension_logs.length > 0;
+                      const isBlock = booking.client_name === 'STUDIO BLOCK';
+                      
                       return (
-                        <tr key={booking.id} className="hover:bg-[#EAE6DF]/20 transition-colors group">
+                        <tr key={booking.id} className={`hover:bg-[#EAE6DF]/20 transition-colors group ${isBlock ? 'bg-amber-500/5' : ''}`}>
                           <td className="px-6 py-4 font-medium uppercase font-mono tracking-wider">{booking.id.split('-')[0]}</td>
                           
                           <td className="px-6 py-4">
-                            <p className="font-semibold">{booking.client_name}</p>
-                            <p className="text-[10px] text-[#1A1A1A]/50 font-mono mt-0.5">{booking.client_phone}</p>
+                            <p className={`font-semibold ${isBlock ? 'text-amber-600' : ''}`}>{booking.client_name}</p>
+                            {!isBlock && <p className="text-[10px] text-[#1A1A1A]/50 font-mono mt-0.5">{booking.client_phone}</p>}
                             
-                            {/* === NEW: EMAIL DISPLAY WITH EMERALD COLOR === */}
-                            {booking.client_email && (
+                            {!isBlock && booking.client_email && (
                               <p className="text-[10px] text-emerald-700 font-mono mt-0.5">{booking.client_email}</p>
                             )}
                           </td>
                           
                           <td className="px-6 py-4 max-w-[200px] truncate">
                             <p className="font-medium text-[#1A1A1A]/80">{booking.purpose}</p>
-                            {booking.equipment_addons && booking.equipment_addons.length > 0 && (
+                            {!isBlock && booking.equipment_addons && booking.equipment_addons.length > 0 && (
                               <div className="flex flex-wrap gap-1 mt-1.5">
                                 {booking.equipment_addons.map((eq, i) => <span key={i} className="text-[8px] uppercase tracking-widest bg-[#1A1A1A]/5 text-[#1A1A1A]/60 px-1.5 py-0.5 rounded-sm">{eq.name}</span>)}
                               </div>
@@ -324,7 +420,7 @@ export default function AdminDashboard() {
                             </div>
                             <div className="flex flex-wrap items-center gap-1 mt-1.5">
                               {booking.time_slots?.map((time, i) => (
-                                <span key={i} className="text-[9px] font-mono text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-sm border border-emerald-100">{time}</span>
+                                <span key={i} className={`text-[9px] font-mono px-1.5 py-0.5 rounded-sm border ${isBlock ? 'text-amber-800 bg-amber-100 border-amber-200' : 'text-emerald-700 bg-emerald-50 border-emerald-100'}`}>{time}</span>
                               ))}
                             </div>
                             {hasLogs && (
@@ -344,11 +440,13 @@ export default function AdminDashboard() {
                             {booking.status === 'confirmed' ? (
                               <div className="flex flex-col items-end space-y-2">
                                 <button onClick={() => handleAction(booking.id, 'completed')} className="px-4 py-2 text-[9px] uppercase tracking-widest font-bold transition-all bg-[#1A1A1A] text-white hover:bg-emerald-600">
-                                  Mark Completed
+                                  {isBlock ? 'Unblock / Clear' : 'Mark Completed'}
                                 </button>
-                                <button onClick={() => openEditModal(booking)} className="text-[9px] uppercase tracking-widest text-[#1A1A1A]/40 hover:text-amber-600 underline decoration-[#1A1A1A]/20 hover:decoration-amber-600 underline-offset-4 transition-colors">
-                                  <i className="fa-solid fa-pen mr-1"></i> Modify Slots
-                                </button>
+                                {!isBlock && (
+                                  <button onClick={() => openEditModal(booking)} className="text-[9px] uppercase tracking-widest text-[#1A1A1A]/40 hover:text-amber-600 underline decoration-[#1A1A1A]/20 hover:decoration-amber-600 underline-offset-4 transition-colors">
+                                    <i className="fa-solid fa-pen mr-1"></i> Modify Slots
+                                  </button>
+                                )}
                               </div>
                             ) : (
                               <span className="inline-flex items-center px-2 py-1 bg-neutral-100 text-neutral-600 text-[9px] uppercase tracking-widest border border-neutral-200 rounded-sm font-bold">Archived</span>
@@ -378,7 +476,7 @@ export default function AdminDashboard() {
                   <div key={day} className={`min-h-[100px] md:min-h-[120px] p-2 bg-[#F4F2EE] border border-[#1A1A1A]/10 rounded-sm flex flex-col gap-1.5 overflow-hidden`}>
                     <div className="text-[11px] font-serif font-bold text-[#1A1A1A]/60 border-b border-[#1A1A1A]/5 pb-1 mb-1">{day}</div>
                     {dayBookings.map(b => (
-                        <div key={b.id} title={`${b.client_name} - ${b.purpose}`} className={`px-1.5 py-1 text-[8px] md:text-[9px] uppercase tracking-wider font-mono truncate rounded-sm border-l-2 bg-emerald-50 text-emerald-900 border-emerald-500`}>
+                        <div key={b.id} title={`${b.client_name} - ${b.purpose}`} className={`px-1.5 py-1 text-[8px] md:text-[9px] uppercase tracking-wider font-mono truncate rounded-sm border-l-2 ${b.client_name === 'STUDIO BLOCK' ? 'bg-amber-100 text-amber-900 border-amber-500' : 'bg-emerald-50 text-emerald-900 border-emerald-500'}`}>
                           {b.time_slots[0]?.split(' ')[0]} {b.client_name.split(' ')[0]}
                         </div>
                     ))}
@@ -443,6 +541,80 @@ export default function AdminDashboard() {
               <button onClick={() => setEditingBooking(null)} className="px-6 py-2 text-[10px] uppercase tracking-widest font-bold text-[#1A1A1A]/50 hover:text-[#1A1A1A] transition-colors">Cancel</button>
               <button onClick={saveScheduleChanges} disabled={editSelectedSlots.length === 0} className="px-6 py-2 bg-[#1A1A1A] text-white text-[10px] uppercase tracking-widest font-bold hover:bg-emerald-600 transition-colors disabled:opacity-50">
                 Save & Record Log
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* --- BLOCK SLOTS MODAL OVERLAY --- */}
+      {isBlockModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#1A1A1A]/80 backdrop-blur-sm p-6">
+          <div className="bg-[#F4F2EE] w-full max-w-2xl shadow-2xl overflow-hidden border border-[#1A1A1A]/20">
+            <div className="bg-amber-500 px-6 py-4 flex justify-between items-center text-black">
+              <div>
+                <h3 className="font-serif text-xl font-bold">Blackout Schedule</h3>
+                <p className="text-[10px] uppercase tracking-widest text-black/60 mt-1">Prevent public booking for specific hours</p>
+              </div>
+              <button onClick={() => setIsBlockModalOpen(false)} className="text-black/50 hover:text-black"><i className="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            
+            <div className="p-8 space-y-6">
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest text-[#1A1A1A]/60 font-medium mb-2">Select Date</label>
+                  <input 
+                    type="date" 
+                    value={blockDate} 
+                    onChange={(e) => { setBlockDate(e.target.value); setBlockSelectedSlots([]); }}
+                    className="w-full bg-white border border-[#1A1A1A]/20 px-4 py-2 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] uppercase tracking-widest text-[#1A1A1A]/60 font-medium mb-2">Block Reason (Internal)</label>
+                  <input 
+                    type="text" 
+                    value={blockReason} 
+                    onChange={(e) => setBlockReason(e.target.value)}
+                    className="w-full bg-white border border-[#1A1A1A]/20 px-4 py-2 text-xs text-[#1A1A1A] focus:outline-none focus:border-[#1A1A1A]"
+                  />
+                </div>
+              </div>
+
+              {blockDate && (
+                <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+                  <label className="block text-[10px] uppercase tracking-widest text-[#1A1A1A]/60 font-medium mb-3 border-t border-[#1A1A1A]/10 pt-4">Select Hours to Block</label>
+                  <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
+                    {allTimeSlots.map(slot => {
+                      const isTakenByClient = disabledSlotsForBlockDate.includes(slot);
+                      const isSelected = blockSelectedSlots.includes(slot);
+
+                      return (
+                        <button 
+                          key={slot} 
+                          disabled={isTakenByClient}
+                          onClick={() => toggleBlockSlot(slot)} 
+                          className={`py-3 px-2 text-[10px] tracking-wider font-medium transition-all duration-200 border relative ${
+                            isTakenByClient 
+                              ? 'bg-red-50 text-red-300 border-red-100 line-through cursor-not-allowed'
+                              : isSelected 
+                                ? 'bg-amber-500 text-black border-amber-600 shadow-md scale-105 font-bold' 
+                                : 'bg-white text-[#1A1A1A] border-[#1A1A1A]/20 hover:border-[#1A1A1A]/50'
+                          }`}
+                        >
+                          {isTakenByClient ? 'CLIENT BOOKED' : slot}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="bg-white px-8 py-5 border-t border-[#1A1A1A]/10 flex justify-end space-x-4">
+              <button onClick={() => setIsBlockModalOpen(false)} className="px-6 py-2 text-[10px] uppercase tracking-widest font-bold text-[#1A1A1A]/50 hover:text-[#1A1A1A] transition-colors">Cancel</button>
+              <button onClick={executeSlotBlock} disabled={blockSelectedSlots.length === 0} className="px-6 py-2 bg-[#1A1A1A] text-white text-[10px] uppercase tracking-widest font-bold hover:bg-amber-500 hover:text-black transition-colors disabled:opacity-50">
+                Confirm Blackout
               </button>
             </div>
           </div>
